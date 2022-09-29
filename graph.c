@@ -21,7 +21,8 @@ struct Node
 {
     int id;
     struct Node* nextNode;
-    struct Edge* nextEdge;
+    struct Edge* nextEdgeOut;
+    struct Edge* nextEdgeIn;
 };
 
 // Data structure to store a graph edge
@@ -34,18 +35,30 @@ struct Edge
 
 Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){ 
 
-    Node *newNode = NULL;
-    Edge *newEdge = NULL;
+    Node *newNodeT = NULL;
+    Node *newNodeH = NULL;
+    Edge *newEdgeT = NULL;
+    Edge *newEdgeH = NULL;
     
-    
-    newNode = searchGraph(listHead, tail);
-    if (newNode == NULL){
-        newNode = createNode(tail);
-        listHead->nextNode = insertNode(listHead->nextNode, newNode);
+    //For tail 
+    newNodeT = searchGraph(listHead, tail);
+    if (newNodeT == NULL){
+        newNodeT = createNode(tail);
+        listHead->nextNode = insertNode(listHead->nextNode, newNodeT);
     }
 
-    newEdge = createEdge(head, width, length);
-    newNode->nextEdge= insertEdge(newNode->nextEdge, newEdge);
+    newEdgeT = createEdge(head, width, length);
+    newNodeT->nextEdgeOut= insertEdge(newNodeT->nextEdgeOut, newEdgeT);
+
+    //for head
+    newNodeH = searchGraph(listHead, head);
+    if (newNodeH == NULL){
+        newNodeH = createNode(head);
+        listHead->nextNode = insertNode(listHead->nextNode, newNodeH);
+    }
+
+    newEdgeH = createEdge(tail, width, length);
+    newNodeH->nextEdgeIn= insertEdge(newNodeH->nextEdgeIn, newEdgeH);
 
     return listHead;
 }
@@ -81,7 +94,7 @@ Node *createNode(int tail){
     
     newNode->id = tail;
     newNode->nextNode = NULL;
-    newNode->nextEdge = NULL;
+    newNode->nextEdgeOut = NULL;
 
     return newNode;
 }
@@ -146,8 +159,14 @@ void printGraph(Graph *Head){
 
     for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
         printf("Edges of Node %d:\n", auxN->id);
+        printf("Out\n");
         printf("Dest\tWidth\tLength\n");
-        for(auxE=auxN->nextEdge; auxE!=NULL; auxE=auxE->nextEdge){
+        for(auxE=auxN->nextEdgeOut; auxE!=NULL; auxE=auxE->nextEdge){
+            printf("%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length);
+        }
+        printf("In\n");
+        printf("Dest\tWidth\tLength\n");
+        for(auxE=auxN->nextEdgeIn; auxE!=NULL; auxE=auxE->nextEdge){
             printf("%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length);
         }
     }
@@ -156,15 +175,22 @@ void printGraph(Graph *Head){
 void freeGraph(Node *listHead){
 
     Node *auxN;
-    Edge *auxEHead, *auxE;
+    Edge *auxEHeadIn, *auxEIn;
+    Edge *auxEHeadOut, *auxEOut;
 
     while(listHead!= NULL){
         auxN=listHead;
-        auxEHead = listHead->nextEdge;
-        while(auxEHead!=NULL){
-            auxE = auxEHead;
-            auxEHead = auxE->nextEdge;
-            free(auxE);
+        auxEHeadIn = listHead->nextEdgeIn;
+        while(auxEHeadIn!=NULL){
+            auxEIn = auxEHeadIn;
+            auxEHeadIn = auxEIn->nextEdge;
+            free(auxEIn);
+        }
+        auxEHeadOut = listHead->nextEdgeOut;
+        while(auxEHeadOut!=NULL){
+            auxEOut = auxEHeadOut;
+            auxEHeadOut = auxEOut->nextEdge;
+            free(auxEOut);
         }
 
         listHead=listHead->nextNode;

@@ -18,7 +18,8 @@ typedef struct _Graph{
 typedef struct _Node{
     int id;
     struct _Node *nextNode;
-    struct _Edge *nextEdge;
+    struct _Edge *nextEdgeOut;
+    struct _Edge *nextEdgeIn;
 } Node;
 
 typedef struct _Edge{
