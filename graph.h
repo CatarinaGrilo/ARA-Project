@@ -5,29 +5,10 @@
  *
  *****************************************************************************/
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef GRAPH_INCLUDED
+#define GRAPH_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct _Graph{
-    struct _Nodes *nextNode;
-} Graph;
-
-typedef struct _Node{
-    int id;
-    struct _Node *nextNode;
-    struct _Edge *nextEdgeOut;
-    struct _Edge *nextEdgeIn;
-} Node;
-
-typedef struct _Edge{
-    int dest;
-    int width;
-    int length;
-    struct _Edge *nextEdge;
-} Edge;
+#include "main.h"
 
 Graph *createGraph(Graph *listHead, int tail, int head, int width, int length);
 
@@ -37,9 +18,19 @@ Node *createNode(int tail);
 
 Node *insertNode(Node *listHead, Node *newNode);
 
-Edge *createEdge(int head, int width, int length);
+Edge *createEdge(int head, int width, int length, Node *dest);
 
 Edge *insertEdge(Edge *listHead, Edge *newEdge);
+
+Edge *searchEdge(Edge *listHead, int id);
+
+ForwardTable *updateForwardTable(Node *node, Event *eventsHead);
+
+ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id);
+
+ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event);
+
+ForwardTable *updateEstimate(ForwardTable *dest, Edge *edge , Event *event);
 
 void printGraph(Graph *Head);
 

@@ -6,8 +6,9 @@
  *****************************************************************************/
 
 #include "graph.h"
+#include "calendar.h"
 
-#define N 4096 // Maximum number of nodes in the network 0-4095
+extern char flag_sim;
 
 // Data structure to store the graph, list of all nodes that exist in the network
 struct Graph
@@ -23,6 +24,7 @@ struct Node
     struct Node* nextNode;
     struct Edge* nextEdgeOut;
     struct Edge* nextEdgeIn;
+    struct ForwardTable* nextDest;
 };
 
 // Data structure to store a graph edge
@@ -30,7 +32,20 @@ struct Edge
 {
     int dest;
     int width, length;
+    float An;
     struct Edge* nextEdge;
+    struct Node* destNode;
+};
+
+// Data structure to store a graph edge
+struct ForwardTable
+{
+    int dest;
+    int cost_l;
+    int cost_w;
+    int nextHop;
+    struct Node *hop;
+    struct ForwardTable* nextDest;
 };
 
 Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){ 
@@ -40,25 +55,23 @@ Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){
     Edge *newEdgeT = NULL;
     Edge *newEdgeH = NULL;
     
-    //For tail 
     newNodeT = searchGraph(listHead, tail);
     if (newNodeT == NULL){
         newNodeT = createNode(tail);
         listHead->nextNode = insertNode(listHead->nextNode, newNodeT);
     }
 
-    newEdgeT = createEdge(head, width, length);
-    newNodeT->nextEdgeOut= insertEdge(newNodeT->nextEdgeOut, newEdgeT);
-
-    //for head
     newNodeH = searchGraph(listHead, head);
     if (newNodeH == NULL){
         newNodeH = createNode(head);
         listHead->nextNode = insertNode(listHead->nextNode, newNodeH);
     }
 
-    newEdgeH = createEdge(tail, width, length);
-    newNodeH->nextEdgeIn= insertEdge(newNodeH->nextEdgeIn, newEdgeH);
+    newEdgeT = createEdge(head, width, length, newNodeH);
+    newNodeT->nextEdgeOut = insertEdge(newNodeT->nextEdgeOut, newEdgeT);
+
+    newEdgeH = createEdge(tail, width, length, newNodeT);
+    newNodeH->nextEdgeIn = insertEdge(newNodeH->nextEdgeIn, newEdgeH);
 
     return listHead;
 }
@@ -117,7 +130,7 @@ Node *insertNode(Node *listHead, Node *newNode){ //Insert the new Node in the en
     return listHead;
 }
 
-Edge *createEdge(int head, int width, int length){ 
+Edge *createEdge(int head, int width, int length, Node *dest){ 
 
     Edge *newEdge;
 
@@ -129,6 +142,8 @@ Edge *createEdge(int head, int width, int length){
     newEdge->dest = head;
     newEdge->width = width;
     newEdge->length = length;
+    newEdge->An = 0;
+    newEdge->destNode = dest;
     newEdge->nextEdge = NULL;
 
     return newEdge;
@@ -152,6 +167,163 @@ Edge *insertEdge(Edge *listHead, Edge *newEdge){
     return listHead;
 }
 
+Edge *searchEdge(Edge *listHead, int id){
+
+    Edge *auxT;
+
+    if(listHead == NULL){
+        return NULL;
+    }else{     
+        auxT = listHead;
+        if(auxT->dest == id)
+            return auxT;
+        while(auxT->nextEdge != NULL){
+            auxT = auxT->nextEdge;
+            if( auxT->dest == id ) 
+                return auxT;
+        }
+    }
+    return NULL;
+}
+
+ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
+
+    ForwardTable *node_ft = NULL;    
+
+    node_ft = searchDestiny(node->nextDest, eventsHead->msg[0]);
+    if(node_ft == NULL){ //If destination does not exist in forwarding table
+        node->nextDest = createDestiny(node->nextDest, node->nextEdgeOut, eventsHead);
+        return node->nextDest;
+    }else{
+        //printf("node=%d\n", node->id);
+        node_ft = updateEstimate(node_ft, node->nextEdgeOut, eventsHead);
+        return node_ft;
+    }
+
+    return NULL;
+}
+
+ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
+
+    ForwardTable *auxT;
+
+    if(ftHead == NULL){
+        return NULL;
+    }else{     
+        auxT = ftHead;
+        if(auxT->dest == dest_id)
+            return auxT;
+        while(auxT->nextDest != NULL){
+            auxT = auxT->nextDest;
+            if( auxT->dest == dest_id ) 
+                return auxT;
+        }
+    }
+    return NULL;
+}
+
+ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event){
+
+    ForwardTable *newDest = NULL;
+    Edge *edge = NULL;
+
+    if((newDest = (ForwardTable*) calloc(1, sizeof(ForwardTable))) == NULL){   
+        printf("It was not possible to allocate memory\n");
+        exit(1);
+    }
+    edge = searchEdge(edgesHead, event->origin);
+    if(edge == NULL){
+        return NULL;
+    }
+    newDest->dest = event->msg[0];
+    newDest->cost_l = event->msg[1] + edge->length;
+    if(newDest->cost_w > event->msg[2]){
+        newDest->cost_w = event->msg[2];
+    }else{
+        newDest->cost_w = edge->width;
+    }
+    newDest->nextHop = event->origin;
+    newDest->hop = event->originPointer;
+    newDest->nextDest = NULL;
+
+    if(ftHead == NULL){
+        ftHead = newDest;
+    }else{
+        newDest->nextDest = ftHead;
+        ftHead = newDest;
+    }
+
+    return ftHead;
+}
+
+ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
+
+    int aux_width=0;
+    Edge *edge = NULL;
+
+    edge = searchEdge(edgeHead, event->origin);
+    if(edge == NULL){
+        return NULL;
+    }
+    //printf("edgewidht=%d\n",edge->width);
+
+    //operation of extention on width, we get the minimum capacity
+    if(edge->width > event->msg[2]){
+        aux_width = event->msg[2];
+    }else{
+        aux_width = edge->width;
+    }
+    //printf("auxwidht=%d\n",aux_width);
+    //printf("deswidht=%d\n",dest->cost_w);
+    //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    if(flag_sim=='l'){
+        if(dest->cost_l > event->msg[1] + edge->length || (dest->cost_l == event->msg[1] + edge->length && dest->nextHop==event->origin)){
+            dest->cost_l = event->msg[1] + edge->length;
+            dest->hop = event->originPointer;
+            dest->nextHop = event->origin;
+            dest->cost_w = aux_width;
+        }else if(dest->cost_l == event->msg[1] + edge->length){
+            if(dest->cost_w < aux_width){
+                dest->cost_w = aux_width;
+                dest->cost_l = event->msg[1] + edge->length;
+                dest->hop = event->originPointer;
+                dest->nextHop = event->origin;
+            }
+        }
+    }else{
+        if(dest->cost_w < aux_width || (dest->cost_w == aux_width && dest->nextHop==event->origin)){
+            dest->cost_w = aux_width;
+            dest->cost_l = event->msg[1] + edge->length;
+            dest->hop = event->originPointer;
+            dest->nextHop = event->origin;
+        }else if(dest->cost_w == aux_width){
+            if(dest->cost_l > event->msg[1] + edge->length){
+                dest->cost_l = event->msg[1] + edge->length;
+                dest->hop = event->originPointer;
+                dest->nextHop = event->origin;
+                dest->cost_w = aux_width;
+            }
+        }
+    }
+    //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    
+    return dest;
+}
+
+void printFT(Graph *Head){
+
+    Node *auxN; 
+    ForwardTable *auxFT;
+
+    for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
+        printf("Forwarding Table Node %d:\n", auxN->id);
+        printf("Dest\tWidth\tLength\tNextHop\tHop\n");
+        for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
+            printf("%d\t%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop, auxFT->hop->id);
+        }
+    }
+}
+
 void printGraph(Graph *Head){
 
     Node *auxN; 
@@ -160,14 +332,14 @@ void printGraph(Graph *Head){
     for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
         printf("Edges of Node %d:\n", auxN->id);
         printf("Out\n");
-        printf("Dest\tWidth\tLength\n");
+        printf("Dest\tWidth\tLength\tDestPoint\n");
         for(auxE=auxN->nextEdgeOut; auxE!=NULL; auxE=auxE->nextEdge){
-            printf("%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length);
+            printf("%d\t%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length, auxE->destNode->id);
         }
         printf("In\n");
-        printf("Dest\tWidth\tLength\n");
+        printf("Dest\tWidth\tLength\tDestPoint\n");
         for(auxE=auxN->nextEdgeIn; auxE!=NULL; auxE=auxE->nextEdge){
-            printf("%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length);
+            printf("%d\t%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length, auxE->destNode->id);
         }
     }
 }
@@ -177,6 +349,7 @@ void freeGraph(Node *listHead){
     Node *auxN;
     Edge *auxEHeadIn, *auxEIn;
     Edge *auxEHeadOut, *auxEOut;
+    ForwardTable *auxFTHead, *auxFT;
 
     while(listHead!= NULL){
         auxN=listHead;
@@ -191,6 +364,12 @@ void freeGraph(Node *listHead){
             auxEOut = auxEHeadOut;
             auxEHeadOut = auxEOut->nextEdge;
             free(auxEOut);
+        }
+        auxFTHead = listHead->nextDest;
+        while(auxFTHead!=NULL){
+            auxFT = auxFTHead;
+            auxFTHead = auxFT->nextDest;
+            free(auxFT);
         }
 
         listHead=listHead->nextNode;

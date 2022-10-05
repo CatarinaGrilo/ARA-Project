@@ -4,8 +4,14 @@
  * Authors: Ana Catarina Grilo & Margarida Fernandes
  *
  *****************************************************************************/
-
 #include "graph.h"
+#include "calendar.h"
+#include "simulator.h"
+
+
+float time_simul = 0; //
+
+char flag_sim = 'l'; //flag to type of simulation, l->widests-shortest, w->shortest-widest 
 
 int main(int argc, char *argv[]){
 
@@ -13,6 +19,7 @@ int main(int argc, char *argv[]){
     char *fpIn;
     FILE *fp;
     Graph *graph=NULL;
+    Event *eventsHead = NULL;
 
     fpIn = argv[1];
 
@@ -26,7 +33,6 @@ int main(int argc, char *argv[]){
         printf("It was not possible to allocate memory\n");
 	    exit(1);
     }
-    graph->nextNode = NULL;
 
     while(fscanf(fp, "%d %d %d %d\n", &tail, &head, &width, &length) != EOF ){
 
@@ -34,8 +40,16 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
+    //printGraph(graph);
+    
+    simulations(graph->nextNode, eventsHead);
+    printf("\n\nWidest-Shortest:\n");
+    printFT(graph);
 
-    printGraph(graph);
+    flag_sim = 'w';
+    simulations(graph->nextNode, eventsHead);
+    printf("\n\nShortest-Widest:\n");
+    printFT(graph); 
 
     freeGraph(graph->nextNode);
     free(graph);
