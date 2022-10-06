@@ -89,8 +89,9 @@ Event *insertEvent_ordered(Event *Listhead, Event *newEvent){
 void calendarEvolution(Event *eventsHead, Node *wakeupNode){
     
     eventsHead = announceNode(eventsHead, wakeupNode); //First wake up the node, create the respective events and insert them in the calendar
+    printf("no foi anunciado\n");
     while(eventsHead != NULL){
-        //printf("An=%f, dest=%d, origin=%d, msg_dest=%d, l=%d, w=%d\n", eventsHead->An, eventsHead->dest, eventsHead->origin, eventsHead->msg[0], eventsHead->msg[1],eventsHead->msg[2]);
+        printf("An=%f, dest=%d, origin=%d, msg_dest=%d, l=%d, w=%d\n", eventsHead->An, eventsHead->dest, eventsHead->origin, eventsHead->msg[0], eventsHead->msg[1],eventsHead->msg[2]);
         eventsHead = doEvent(eventsHead, eventsHead->destPointer);
         eventsHead = popEvent(eventsHead);    
     }
@@ -123,16 +124,10 @@ Event *doEvent(Event *eventsHead, Node *nodeDest){
 
     node = nodeDest;
     time_simul = eventsHead->An;
-
     node_Ftable = updateForwardTable(node, eventsHead);
     if (node_Ftable != NULL){
         eventsHead = sendToNeighbour(eventsHead, node, node_Ftable);
     }
-    else{
-        printf("Error: Forwarding table of node could not be upadated\n");
-        exit(1);
-    }
-
     return eventsHead;
 }
 
@@ -142,15 +137,16 @@ Event *sendToNeighbour(Event *eventsHead, Node *origin, ForwardTable *node_Ftabl
 
     if(origin == NULL || origin->nextEdgeIn==NULL){
         return eventsHead;
-    }else{
+    }
+    else{
         inNeighbour = origin->nextEdgeIn;
-        if(inNeighbour->dest != origin->id){
+        if(inNeighbour->dest != eventsHead->msg[0]){
             eventsHead = createEvent(eventsHead, origin, inNeighbour, node_Ftable->dest ,node_Ftable->cost_l, node_Ftable->cost_w);
         }
         while(inNeighbour->nextEdge != NULL){
             inNeighbour = inNeighbour->nextEdge;
-            if( inNeighbour->dest != origin->id){
-            eventsHead = createEvent(eventsHead, origin, inNeighbour, node_Ftable->dest ,node_Ftable->cost_l, node_Ftable->cost_w);
+            if( inNeighbour->dest != eventsHead->msg[0]){
+                eventsHead = createEvent(eventsHead, origin, inNeighbour, node_Ftable->dest ,node_Ftable->cost_l, node_Ftable->cost_w);
             }
         }
     }

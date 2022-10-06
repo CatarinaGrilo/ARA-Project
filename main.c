@@ -40,16 +40,16 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    //printGraph(graph);
+    printGraph(graph);
     
-    simulations(graph->nextNode, eventsHead);
+    /*simulations(graph->nextNode, eventsHead);
     printf("\n\nWidest-Shortest:\n");
-    printFT(graph);
+    printFT(graph);*/
 
     flag_sim = 'w';
     simulations(graph->nextNode, eventsHead);
     printf("\n\nShortest-Widest:\n");
-    printFT(graph); 
+    printFT(graph);
 
     freeGraph(graph->nextNode);
     free(graph);

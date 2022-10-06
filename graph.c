@@ -282,32 +282,38 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
             dest->hop = event->originPointer;
             dest->nextHop = event->origin;
             dest->cost_w = aux_width;
+            return dest;
         }else if(dest->cost_l == event->msg[1] + edge->length){
             if(dest->cost_w < aux_width){
                 dest->cost_w = aux_width;
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->hop = event->originPointer;
                 dest->nextHop = event->origin;
+                return dest;
             }
+            return NULL;
         }
+        return NULL;
     }else{
         if(dest->cost_w < aux_width || (dest->cost_w == aux_width && dest->nextHop==event->origin)){
             dest->cost_w = aux_width;
             dest->cost_l = event->msg[1] + edge->length;
             dest->hop = event->originPointer;
             dest->nextHop = event->origin;
+            return dest;
         }else if(dest->cost_w == aux_width){
             if(dest->cost_l > event->msg[1] + edge->length){
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->hop = event->originPointer;
                 dest->nextHop = event->origin;
                 dest->cost_w = aux_width;
+                return dest;
             }
+            return NULL;
         }
+        return NULL;
     }
     //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
-    
-    return dest;
 }
 
 void printFT(Graph *Head){
