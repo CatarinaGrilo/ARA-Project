@@ -34,22 +34,22 @@ int main(int argc, char *argv[]){
 	    exit(1);
     }
 
-    while(fscanf(fp, "%d %d %d %d\n", &tail, &head, &width, &length) != EOF ){
+    while(fscanf(fp, "%d%*c%d%*c%d%*c%d\n", &tail, &head, &width, &length) != EOF ){
 
         printf("%d %d %d %d:\n", tail, head, width, length);
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    printGraph(graph);
+    //printGraph(graph);
     
-    /*simulations(graph->nextNode, eventsHead);
+    simulations(graph->nextNode, eventsHead);
     printf("\n\nWidest-Shortest:\n");
-    printFT(graph);*/
+    printFT(graph);
 
-    flag_sim = 'w';
+    /*flag_sim = 'w'; //We need to see this, graphs-line 297, conditions for shortest-widest
     simulations(graph->nextNode, eventsHead);
     printf("\n\nShortest-Widest:\n");
-    printFT(graph);
+    printFT(graph);*/
 
     freeGraph(graph->nextNode);
     free(graph);

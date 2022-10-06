@@ -89,9 +89,9 @@ Event *insertEvent_ordered(Event *Listhead, Event *newEvent){
 void calendarEvolution(Event *eventsHead, Node *wakeupNode){
     
     eventsHead = announceNode(eventsHead, wakeupNode); //First wake up the node, create the respective events and insert them in the calendar
-    printf("no foi anunciado\n");
+    //printf("no foi anunciado\n");
     while(eventsHead != NULL){
-        printf("An=%f, dest=%d, origin=%d, msg_dest=%d, l=%d, w=%d\n", eventsHead->An, eventsHead->dest, eventsHead->origin, eventsHead->msg[0], eventsHead->msg[1],eventsHead->msg[2]);
+        //printf("An=%f, dest=%d, origin=%d, msg_dest=%d, l=%d, w=%d\n", eventsHead->An, eventsHead->dest, eventsHead->origin, eventsHead->msg[0], eventsHead->msg[1],eventsHead->msg[2]);
         eventsHead = doEvent(eventsHead, eventsHead->destPointer);
         eventsHead = popEvent(eventsHead);    
     }
