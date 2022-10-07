@@ -46,10 +46,10 @@ int main(int argc, char *argv[]){
     printf("\n\nWidest-Shortest:\n");
     printFT(graph);
 
-    /*flag_sim = 'w'; //We need to see this, graphs-line 297, conditions for shortest-widest
+    flag_sim = 'w'; //We need to see this, graphs-line 297, conditions for shortest-widest
     simulations(graph->nextNode, eventsHead);
     printf("\n\nShortest-Widest:\n");
-    printFT(graph);*/
+    printFT(graph);
 
     freeGraph(graph->nextNode);
     free(graph);

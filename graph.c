@@ -224,6 +224,7 @@ ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
 
 ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event){
 
+    int aux_width=0;
     ForwardTable *newDest = NULL;
     Edge *edge = NULL;
 
@@ -234,14 +235,15 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
     edge = searchEdge(edgesHead, event->origin);
     if(edge == NULL){
         return NULL;
+    }  
+    if(edge->width > event->msg[2]){
+        aux_width = event->msg[2];
+    }else{
+        aux_width = edge->width;
     }
     newDest->dest = event->msg[0];
     newDest->cost_l = event->msg[1] + edge->length;
-    if(newDest->cost_w > event->msg[2]){
-        newDest->cost_w = event->msg[2];
-    }else{
-        newDest->cost_w = edge->width;
-    }
+    newDest->cost_w = aux_width;
     newDest->nextHop = event->origin;
     newDest->hop = event->originPointer;
     newDest->nextDest = NULL;

@@ -102,16 +102,15 @@ void calendarEvolution(Event *eventsHead, Node *wakeupNode){
 Event *announceNode(Event *eventsHead, Node *wakeupNode){
 
     Edge *inNeighbour;
-    int wake_message[3] = {wakeupNode->id, 0, 0};
 
     if(wakeupNode == NULL || wakeupNode->nextEdgeIn==NULL){
         return eventsHead;
     }else{
         inNeighbour = wakeupNode->nextEdgeIn;
-        eventsHead = createEvent(eventsHead, wakeupNode, inNeighbour, wakeupNode->id, 0, 0);
+        eventsHead = createEvent(eventsHead, wakeupNode, inNeighbour, wakeupNode->id, 0, 1000000);
         while(inNeighbour->nextEdge != NULL){
             inNeighbour = inNeighbour->nextEdge;
-            eventsHead = createEvent(eventsHead, wakeupNode, inNeighbour, wakeupNode->id , 0, 0);
+            eventsHead = createEvent(eventsHead, wakeupNode, inNeighbour, wakeupNode->id , 0, 1000000);
         }
     }
     return eventsHead;
