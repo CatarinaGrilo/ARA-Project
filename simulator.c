@@ -33,4 +33,18 @@ void simulations(Node *nodeHead, Event *eventHead){
         }
     }
     return;
+}
+
+void simulationsIteractive(Node *destNode, Event *eventHead){
+    
+    Node *auxT = NULL; 
+    
+    if(destNode == NULL){
+        return;
+    }else{
+        auxT = destNode;
+        time_simul = 0;
+        calendarEvolution(eventHead, auxT);
+    }
+    return;
 } 

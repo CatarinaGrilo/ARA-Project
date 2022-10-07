@@ -12,5 +12,6 @@
 
 void simulations(Node *nodeHead, Event *eventHead);
 
+void simulationsIteractive(Node *destNode, Event *eventHead);
 
 #endif
