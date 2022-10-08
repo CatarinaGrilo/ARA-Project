@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
     }
     while(fscanf(fp, "%d%*c%d%*c%d%*c%d\n", &tail, &head, &width, &length) != EOF ){
 
-        printf("%d %d %d %d:\n", tail, head, width, length);
+        //printf("%d %d %d %d:\n", tail, head, width, length);
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
@@ -54,14 +54,15 @@ int main(int argc, char *argv[]){
 
         if (argv[1][1] == 's'){
             /* Simulation Mode*/
-            simulations(graph->nextNode, eventsHead);
-            printf("\n\nWidest-Shortest:\n");
-            printFT(graph);
+            /*simulations(graph->nextNode, eventsHead);
+            printf("\n\nWidest-Shortest:\n\n");
+            //printFT(graph);
+            resetFT(graph->nextNode);*/
 
             flag_sim = 'w';
             simulations(graph->nextNode, eventsHead);
             printf("\n\nShortest-Widest:\n");
-            printFT(graph);
+            //printFT(graph);
         }
 
         else if(argv[1][1] == 'i'){
@@ -80,8 +81,9 @@ int main(int argc, char *argv[]){
             auxT = searchGraph(graph, tail);
             auxFT = searchDestiny(auxT->nextDest, head);
 
-            printf("\nWidest-Shortest:\n");
+            printf("\nWidest-Shortest:\n\n");
             printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+            resetFT(graph->nextNode);
 
             printf("\nShortest-Widest:\n");
             flag_sim = 'w';

@@ -32,6 +32,8 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
 
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edge , Event *event);
 
+void resetFT(Node *listHead);
+
 void printGraph(Graph *Head);
 
 void freeGraph(Node *listHead);

@@ -279,7 +279,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     //printf("deswidht=%d\n",dest->cost_w);
     //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
     if(flag_sim=='l'){
-        if(dest->cost_l > event->msg[1] + edge->length || (dest->cost_l == event->msg[1] + edge->length && dest->nextHop==event->origin)){
+        if(dest->cost_l > event->msg[1] + edge->length){
             dest->cost_l = event->msg[1] + edge->length;
             dest->hop = event->originPointer;
             dest->nextHop = event->origin;
@@ -297,7 +297,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
         }
         return NULL;
     }else{
-        if(dest->cost_w < aux_width || (dest->cost_w == aux_width && dest->nextHop==event->origin)){
+        if(dest->cost_w < aux_width){
             dest->cost_w = aux_width;
             dest->cost_l = event->msg[1] + edge->length;
             dest->hop = event->originPointer;
@@ -325,9 +325,9 @@ void printFT(Graph *Head){
 
     for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
         printf("Forwarding Table Node %d:\n", auxN->id);
-        printf("Dest\tWidth\tLength\tNextHop\tHop\n");
+        printf("Dest\tWidth\tLength\tNextHop\n");
         for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
-            printf("%d\t%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop, auxFT->hop->id);
+            printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop);
         }
     }
 }
@@ -349,6 +349,25 @@ void printGraph(Graph *Head){
         for(auxE=auxN->nextEdgeIn; auxE!=NULL; auxE=auxE->nextEdge){
             printf("%d\t%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length, auxE->destNode->id);
         }
+    }
+}
+
+void resetFT(Node *listHead){
+
+    Node *auxN=listHead;
+    ForwardTable *auxFTHead, *auxFT;
+
+    while(auxN!= NULL){
+        auxFTHead = auxN->nextDest;
+        while(auxFTHead!=NULL){
+            auxFT = auxFTHead;
+            auxFT->cost_l=1000000;
+            auxFT->cost_w=0;
+            auxFT->nextHop = -1;
+            auxFT->hop = NULL;
+            auxFTHead = auxFT->nextDest;
+        }
+        auxN=auxN->nextNode;
     }
 }
 
