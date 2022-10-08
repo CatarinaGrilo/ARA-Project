@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
     ForwardTable *auxFT=NULL;
     Event *eventsHead = NULL;
   
-    if( argc != 3){
+    if( argc < 3){
         printf("Error: Arguments are not valid\n");
         exit(0);
     }
@@ -58,16 +58,22 @@ int main(int argc, char *argv[]){
             printf("\n\nWidest-Shortest:\n");
             printFT(graph);
 
-            flag_sim = 'w'; //We need to see this, graphs-line 297, conditions for shortest-widest
+            flag_sim = 'w';
             simulations(graph->nextNode, eventsHead);
             printf("\n\nShortest-Widest:\n");
             printFT(graph);
         }
 
         else if(argv[1][1] == 'i'){
+
+            if( argc != 5){
+                printf("Error: Arguments are not valid\n");
+                exit(0);
+            }
+
             /* Interactive simulation mode */
-            tail = strtol(argv[2], &nb, 10); //souce
-            head = strtol(argv[3], &nb, 10); ; //dest
+            tail = strtol(argv[3], &nb, 10); //souce
+            head = strtol(argv[4], &nb, 10); ; //dest
 
             auxH = searchGraph(graph, head);
             simulationsInteractive(auxH, eventsHead);
