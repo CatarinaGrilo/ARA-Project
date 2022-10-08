@@ -23,8 +23,13 @@ int main(int argc, char *argv[]){
     Node *auxH=NULL;
     ForwardTable *auxFT=NULL;
     Event *eventsHead = NULL;
-
-    fpIn = argv[1];
+  
+    if( argc != 3){
+        printf("Error: Arguments are not valid\n");
+        exit(0);
+    }
+    
+    fpIn = argv[2];
 
     fp = fopen(fpIn, "r");
     if (fp == (FILE*) NULL) {
@@ -42,34 +47,42 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    //printGraph(graph);
-    
-    //Simulation mode 
-    simulations(graph->nextNode, eventsHead);
-    printf("\n\nWidest-Shortest:\n");
-    printFT(graph);
 
-    flag_sim = 'w'; //We need to see this, graphs-line 297, conditions for shortest-widest
-    simulations(graph->nextNode, eventsHead);
-    printf("\n\nShortest-Widest:\n");
-    printFT(graph);
 
-    //Iteractive simulation mode
-    /*tail = strtol(argv[2], &nb, 10); //souce
-    head = strtol(argv[3], &nb, 10); ; //dest
+    /* Different Modes*/
+    if( strlen(argv[1]) == 2  && argv[1][0] == '-'){
 
-    auxH = searchGraph(graph, head);
-    simulationsIteractive(auxH, eventsHead);
-    auxT = searchGraph(graph, tail);
-    auxFT = searchDestiny(auxT->nextDest, head);
+        if (argv[1][1] == 's'){
+            /* Simulation Mode*/
+            simulations(graph->nextNode, eventsHead);
+            printf("\n\nWidest-Shortest:\n");
+            printFT(graph);
 
-    printf("\nWidest-Shortest:\n");
-    printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+            flag_sim = 'w'; //We need to see this, graphs-line 297, conditions for shortest-widest
+            simulations(graph->nextNode, eventsHead);
+            printf("\n\nShortest-Widest:\n");
+            printFT(graph);
+        }
 
-    printf("\nShortest-Widest:\n");
-    flag_sim = 'w';
-    simulationsIteractive(auxH, eventsHead);
-    printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);*/
+        else if(argv[1][1] == 'i'){
+            /* Interactive simulation mode */
+            tail = strtol(argv[2], &nb, 10); //souce
+            head = strtol(argv[3], &nb, 10); ; //dest
+
+            auxH = searchGraph(graph, head);
+            simulationsInteractive(auxH, eventsHead);
+            auxT = searchGraph(graph, tail);
+            auxFT = searchDestiny(auxT->nextDest, head);
+
+            printf("\nWidest-Shortest:\n");
+            printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+
+            printf("\nShortest-Widest:\n");
+            flag_sim = 'w';
+            simulationsInteractive(auxH, eventsHead);
+            printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+        }   
+    }
 
     freeGraph(graph->nextNode);
     free(graph);

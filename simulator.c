@@ -35,7 +35,7 @@ void simulations(Node *nodeHead, Event *eventHead){
     return;
 }
 
-void simulationsIteractive(Node *destNode, Event *eventHead){
+void simulationsInteractive(Node *destNode, Event *eventHead){
     
     Node *auxT = NULL; 
     

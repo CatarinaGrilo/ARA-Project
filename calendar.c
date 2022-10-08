@@ -24,7 +24,6 @@ struct Event{
 
 Event *createEvent(Event *eventsHead, Node *wakeupNode, Edge *neighbour, int dest, int cost_l, int cost_w){ 
 
-    int i; 
     float Sn;
     Event *newEvent = NULL;
     time_t t;
