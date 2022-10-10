@@ -54,10 +54,10 @@ int main(int argc, char *argv[]){
 
         if (argv[1][1] == 's'){
             /* Simulation Mode*/
-            simulations(graph->nextNode, eventsHead);
+            /*simulations(graph->nextNode, eventsHead);
             printf("\n\nWidest-Shortest:\n\n");
             printFT(graph);
-            resetFT(graph->nextNode);
+            resetFT(graph->nextNode);*/
 
             flag_sim = 'w';
             simulations(graph->nextNode, eventsHead);

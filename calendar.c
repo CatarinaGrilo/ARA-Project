@@ -138,12 +138,12 @@ Event *sendToNeighbour(Event *eventsHead, Node *origin, ForwardTable *node_Ftabl
     }
     else{
         inNeighbour = origin->nextEdgeIn;
-        if(inNeighbour->dest != eventsHead->msg[0]){
+        if(inNeighbour->dest != eventsHead->msg[0] && eventsHead->origin != inNeighbour->dest){
             eventsHead = createEvent(eventsHead, origin, inNeighbour, node_Ftable->dest ,node_Ftable->cost_l, node_Ftable->cost_w);
         }
         while(inNeighbour->nextEdge != NULL){
             inNeighbour = inNeighbour->nextEdge;
-            if( inNeighbour->dest != eventsHead->msg[0]){
+            if( inNeighbour->dest != eventsHead->msg[0] && eventsHead->origin != inNeighbour->dest){
                 eventsHead = createEvent(eventsHead, origin, inNeighbour, node_Ftable->dest ,node_Ftable->cost_l, node_Ftable->cost_w);
             }
         }
