@@ -41,6 +41,7 @@ typedef struct _ForwardTable{
     int cost_l;
     int cost_w;
     int nextHop;
+    float stab_time;
     struct _Node *hop;
     struct _ForwardTable* nextDest;
 } ForwardTable;

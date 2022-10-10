@@ -44,6 +44,7 @@ struct ForwardTable
     int cost_l;
     int cost_w;
     int nextHop;
+    float stab_time;
     struct Node *hop;
     struct ForwardTable* nextDest;
 };
@@ -245,6 +246,7 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
     newDest->cost_l = event->msg[1] + edge->length;
     newDest->cost_w = aux_width;
     newDest->nextHop = event->origin;
+    newDest->stab_time = event->An;
     newDest->hop = event->originPointer;
     newDest->nextDest = NULL;
 
@@ -283,6 +285,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
             dest->cost_l = event->msg[1] + edge->length;
             dest->hop = event->originPointer;
             dest->nextHop = event->origin;
+            dest->stab_time = event->An;
             dest->cost_w = aux_width;
             return dest;
         }else if(dest->cost_l == event->msg[1] + edge->length){
@@ -290,6 +293,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                 dest->cost_w = aux_width;
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->hop = event->originPointer;
+                dest->stab_time = event->An;
                 dest->nextHop = event->origin;
                 return dest;
             }
@@ -301,6 +305,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
             dest->cost_w = aux_width;
             dest->cost_l = event->msg[1] + edge->length;
             dest->hop = event->originPointer;
+            dest->stab_time = event->An;
             dest->nextHop = event->origin;
             return dest;
         }else if(dest->cost_w == aux_width){
@@ -308,6 +313,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->hop = event->originPointer;
                 dest->nextHop = event->origin;
+                dest->stab_time = event->An;
                 dest->cost_w = aux_width;
                 return dest;
             }
@@ -325,9 +331,9 @@ void printFT(Graph *Head){
 
     for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
         printf("Forwarding Table Node %d:\n", auxN->id);
-        printf("Dest\tWidth\tLength\tNextHop\n");
+        printf("Dest\tWidth\tLength\tNextHop\ttime\n");
         for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
-            printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop);
+            printf("%d\t%d\t%d\t%d\t%f\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop, auxFT->stab_time);
         }
     }
 }

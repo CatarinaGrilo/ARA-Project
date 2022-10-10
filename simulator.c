@@ -26,6 +26,7 @@ void simulations(Node *nodeHead, Event *eventHead){
     }else{
         auxT = nodeHead;
         time_simul = 0;
+        printf("TIME:%f",time_simul);
         calendarEvolution(eventHead, auxT);
         while( auxT->nextNode != NULL){
             auxT = auxT->nextNode;

@@ -47,22 +47,22 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-
+    printGraph(graph);
 
     /* Different Modes*/
     if( strlen(argv[1]) == 2  && argv[1][0] == '-'){
 
         if (argv[1][1] == 's'){
             /* Simulation Mode*/
-            /*simulations(graph->nextNode, eventsHead);
+            simulations(graph->nextNode, eventsHead);
             printf("\n\nWidest-Shortest:\n\n");
-            //printFT(graph);
-            resetFT(graph->nextNode);*/
+            printFT(graph);
+            resetFT(graph->nextNode);
 
             flag_sim = 'w';
             simulations(graph->nextNode, eventsHead);
             printf("\n\nShortest-Widest:\n");
-            //printFT(graph);
+            printFT(graph);
         }
 
         else if(argv[1][1] == 'i'){
