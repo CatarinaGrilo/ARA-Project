@@ -65,7 +65,7 @@ PriorityQueue* updatePriorityQueue(PriorityQueue *Head, Edge *edge){
     else{
         if(Head->dist > newElement->dist){
             newElement->next = Head;
-            Head = newElement
+            Head = newElement;
         }
         else{
             auxH = Head;
@@ -190,7 +190,7 @@ void algorithm(Node *nodeHead){
                 printf("%d\t%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length, auxE->destNode->id);
 
                 DistTableHead = updateDistTable(DistTableHead, auxE);
-                QueueHead = updatePriorityQueue(QueueHead, auxE);
+                //QueueHead = updatePriorityQueue(QueueHead, auxE);
                 
                 
                 printPriorityQueue(QueueHead);
