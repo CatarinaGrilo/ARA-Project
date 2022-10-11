@@ -50,19 +50,22 @@ int main(int argc, char *argv[]){
     //printGraph(graph);
 
     /* Different Modes*/
-    if( strlen(argv[1]) == 2  && argv[1][0] == '-'){
+    if( strlen(argv[1]) == 3  && argv[1][0] == '-'){
 
         if (argv[1][1] == 's'){
-            /* Simulation Mode*/
-            /*simulations(graph->nextNode, eventsHead);
-            printf("\n\nWidest-Shortest:\n\n");
-            printFT(graph);
-            resetFT(graph->nextNode);*/
-
-            flag_sim = 'w';
-            simulations(graph->nextNode, eventsHead);
-            printf("\n\nShortest-Widest:\n");
-            printFT(graph);
+            if(argv[1][2] == 'l'){
+                /* Simulation Mode*/
+                simulations(graph->nextNode, eventsHead);
+                printf("\n\nWidest-Shortest:\n\n");
+                //printFT(graph);
+                resetFT(graph->nextNode);
+            }
+            else if (argv[1][2] == 'w'){
+                flag_sim = 'w';
+                simulations(graph->nextNode, eventsHead);
+                printf("\n\nShortest-Widest:\n");
+                printFT(graph);
+            }
         }
 
         else if(argv[1][1] == 'i'){
@@ -81,14 +84,18 @@ int main(int argc, char *argv[]){
             auxT = searchGraph(graph, tail);
             auxFT = searchDestiny(auxT->nextDest, head);
 
-            printf("\nWidest-Shortest:\n\n");
-            printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
-            resetFT(graph->nextNode);
+            if(argv[1][2] == 'l'){
+                printf("\nWidest-Shortest:\n\n");
+                printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+                resetFT(graph->nextNode);
+            }
 
-            printf("\nShortest-Widest:\n");
-            flag_sim = 'w';
-            simulationsInteractive(auxH, eventsHead);
-            printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+            else if (argv[1][2] == 'w'){
+                printf("\nShortest-Widest:\n");
+                flag_sim = 'w';
+                simulationsInteractive(auxH, eventsHead);
+                printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+            }
         } 
         else if(argv[1][1] == 'a'){
 

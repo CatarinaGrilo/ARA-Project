@@ -17,6 +17,16 @@ struct Graph
     
 };
 
+typedef struct  //Info dos vizinhos para o mm destino
+{
+    int dest;
+    int cost_l;
+    int cost_w;
+    int nextHop;
+    struct Node *hop;
+    struct RoutingTable* nextDest;
+} RoutingTable;
+
 // Data structure to store Edgeacency list nodes of the graph
 struct Node
 {
@@ -47,7 +57,10 @@ struct ForwardTable
     float stab_time;
     struct Node *hop;
     struct ForwardTable* nextDest;
+    RoutingTable* nextRoute; //ter as varias opções de chegar ao mm caminho 
 };
+
+
 
 Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){ 
 
@@ -189,7 +202,8 @@ Edge *searchEdge(Edge *listHead, int id){
 
 ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
 
-    ForwardTable *node_ft = NULL;    
+    ForwardTable *node_ft = NULL;   
+    RoutingTable *node_rt =NULL;
 
     node_ft = searchDestiny(node->nextDest, eventsHead->msg[0]);
     if(node_ft == NULL){ //If destination does not exist in forwarding table
@@ -197,6 +211,10 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
         return node->nextDest;
     }else{
         //printf("node=%d\n", node->id);
+        // Check if path already exists RT
+        // If not, add it
+        // If yes, update RT
+            // Check if is better estimate, if yes uptadte FT
         node_ft = updateEstimate(node_ft, node->nextEdgeOut, eventsHead);
         return node_ft;
     }
@@ -223,6 +241,8 @@ ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
     return NULL;
 }
 
+// COLOCAR FLAG PARA DIFERENCIAR SHORTEST and WIDEST
+// Create RT to append in FT 
 ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event){
 
     int aux_width=0;
@@ -260,6 +280,45 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
     return ftHead;
 }
 
+RoutingTable *createRT(RoutingTable *rtHead, Edge *edgesHead, Event *event){
+
+    int aux_width=0;
+    RoutingTable *newRoute = NULL;
+    Edge *edge = NULL;
+
+    if((newRoute = (RoutingTable*) calloc(1, sizeof(RoutingTable))) == NULL){   
+        printf("It was not possible to allocate memory\n");
+        exit(1);
+    }
+    edge = searchEdge(edgesHead, event->origin);
+    if(edge == NULL){
+        return NULL;
+    }  
+    if(edge->width > event->msg[2]){
+        aux_width = event->msg[2];
+    }else{
+        aux_width = edge->width;
+    }
+    newRoute->dest = event->msg[0];
+    newRoute->cost_l = event->msg[1] + edge->length;
+    newRoute->cost_w = aux_width;
+    newRoute->nextHop = event->origin;
+    newRoute->hop = event->originPointer;
+    newRoute->nextDest = NULL;
+
+    if(rtHead == NULL){
+        rtHead = newRoute;
+    }else{
+        newRoute->nextDest = rtHead;
+        rtHead = newRoute;
+    }
+
+    return rtHead;
+}
+
+
+
+// Alterar o Update Estimate, ter de percorrer a RT table antes de alterar
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
 
     int aux_width=0;
@@ -316,7 +375,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                 dest->stab_time = event->An;
                 dest->cost_w = aux_width;
                 return dest;
-            }else if(dest->cost_l < event->msg[1] + edge->length && dest->nextHop == event->origin){
+            }else if(dest->nextHop == event->origin){
                 //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->stab_time = event->An;
