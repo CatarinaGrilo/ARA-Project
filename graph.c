@@ -279,7 +279,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     }
     //printf("auxwidht=%d\n",aux_width);
     //printf("deswidht=%d\n",dest->cost_w);
-    //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
     if(flag_sim=='l'){
         if(dest->cost_l > event->msg[1] + edge->length){
             dest->cost_l = event->msg[1] + edge->length;

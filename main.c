@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    printGraph(graph);
+    //printGraph(graph);
 
     /* Different Modes*/
     if( strlen(argv[1]) == 2  && argv[1][0] == '-'){
@@ -89,8 +89,15 @@ int main(int argc, char *argv[]){
             flag_sim = 'w';
             simulationsInteractive(auxH, eventsHead);
             printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
-        }   
-    }
+        } 
+        else if(argv[1][1] == 'a'){
+
+            /* Widest Shortest*/
+            algorithm(graph->nextNode);
+
+
+        }
+    }  
 
     freeGraph(graph->nextNode);
     free(graph);
