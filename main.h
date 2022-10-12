@@ -15,6 +15,14 @@
 
 #define N 4096
 
+typedef struct _DistTable{
+    int id;
+    int cost_l;
+    int cost_w;
+    struct Node *NextHop;
+    struct DistTable* next;
+}  DistTable;
+
 typedef struct _Graph{
     struct _Nodes *nextNode;
 } Graph;
@@ -25,6 +33,7 @@ typedef struct _Node{
     struct _Edge *nextEdgeOut;
     struct _Edge *nextEdgeIn;
     struct _ForwardTable *nextDest;
+    DistTable* distTable;
 } Node;
 
 typedef struct _Edge{

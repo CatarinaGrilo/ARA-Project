@@ -35,6 +35,7 @@ struct Node
     struct Edge* nextEdgeOut;
     struct Edge* nextEdgeIn;
     struct ForwardTable* nextDest;
+    struct DistTable* distTable;
 };
 
 // Data structure to store a graph edge

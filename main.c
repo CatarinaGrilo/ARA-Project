@@ -49,6 +49,8 @@ int main(int argc, char *argv[]){
     fclose(fp);
     //printGraph(graph);
 
+
+
     /* Different Modes*/
     if( strlen(argv[1]) == 3  && argv[1][0] == '-'){
 
@@ -97,14 +99,13 @@ int main(int argc, char *argv[]){
                 printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
             }
         } 
-        else if(argv[1][1] == 'a'){
-
-            /* Widest Shortest*/
-            algorithm(graph->nextNode);
-
-
-        }
     }  
+
+     if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
+                    /* Widest Shortest*/
+            algorithm(graph->nextNode);
+     }
+
 
     freeGraph(graph->nextNode);
     free(graph);
