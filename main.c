@@ -59,8 +59,7 @@ int main(int argc, char *argv[]){
                 /* Simulation Mode*/
                 simulations(graph->nextNode, eventsHead);
                 printf("\n\nWidest-Shortest:\n\n");
-                //printFT(graph);
-                resetFT(graph->nextNode);
+                printFT(graph);
             }
             else if (argv[1][2] == 'w'){
                 flag_sim = 'w';
@@ -89,7 +88,6 @@ int main(int argc, char *argv[]){
             if(argv[1][2] == 'l'){
                 printf("\nWidest-Shortest:\n\n");
                 printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
-                resetFT(graph->nextNode);
             }
 
             else if (argv[1][2] == 'w'){
@@ -101,10 +99,10 @@ int main(int argc, char *argv[]){
         } 
     }  
 
-     if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
-                    /* Widest Shortest*/
-            algorithm(graph->nextNode);
-     }
+    /*if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
+                //Widest Shortest
+        algorithm(graph->nextNode);
+    }*/
 
 
     freeGraph(graph->nextNode);

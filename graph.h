@@ -28,11 +28,15 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead);
 
 ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id);
 
+RoutingTable *searchRoute(RoutingTable *rtHead, int dest_id, int nextHop);
+
 ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event);
+
+RoutingTable *createRT(RoutingTable *rtHead, Edge *edgesHead, Event *event);
 
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edge , Event *event);
 
-void resetFT(Node *listHead);
+RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l);
 
 void printGraph(Graph *Head);
 

@@ -16,17 +16,6 @@ struct Graph
     struct Node* nextNode;
     
 };
-
-typedef struct  //Info dos vizinhos para o mm destino
-{
-    int dest;
-    int cost_l;
-    int cost_w;
-    int nextHop;
-    struct Node *hop;
-    struct RoutingTable* nextDest;
-} RoutingTable;
-
 // Data structure to store Edgeacency list nodes of the graph
 struct Node
 {
@@ -59,6 +48,16 @@ struct ForwardTable
     struct Node *hop;
     struct ForwardTable* nextDest;
     RoutingTable* nextRoute; //ter as varias opções de chegar ao mm caminho 
+};
+
+struct RoutingTable//Info dos vizinhos para o mm destino
+{
+    int dest;
+    int cost_l;
+    int cost_w;
+    int nextHop;
+    struct Node *hop;
+    struct RoutingTable* nextDest;
 };
 
 
@@ -205,14 +204,19 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
 
     ForwardTable *node_ft = NULL;   
     RoutingTable *node_rt =NULL;
+    Edge *edge=NULL;
 
     node_ft = searchDestiny(node->nextDest, eventsHead->msg[0]);
     if(node_ft == NULL){ //If destination does not exist in forwarding table
         node->nextDest = createDestiny(node->nextDest, node->nextEdgeOut, eventsHead);
+        if(flag_sim=='w'){
+            edge = searchEdge(node->nextEdgeOut, eventsHead->origin);
+            node_rt = createRT(node->nextDest->nextRoute, edge, eventsHead);
+            node->nextDest->nextRoute = node_rt;
+        }
         return node->nextDest;
     }else{
         //printf("node=%d\n", node->id);
-        // Check if path already exists RT
         // If not, add it
         // If yes, update RT
             // Check if is better estimate, if yes uptadte FT
@@ -236,6 +240,25 @@ ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
         while(auxT->nextDest != NULL){
             auxT = auxT->nextDest;
             if( auxT->dest == dest_id ) 
+                return auxT;
+        }
+    }
+    return NULL;
+}
+
+RoutingTable *searchRoute(RoutingTable *rtHead, int dest_id, int nextHop){
+
+    RoutingTable *auxT;
+
+    if(rtHead == NULL){
+        return NULL;
+    }else{     
+        auxT = rtHead;
+        if(auxT->dest == dest_id && auxT->nextHop == nextHop)
+            return auxT;
+        while(auxT->nextDest != NULL){
+            auxT = auxT->nextDest;
+            if( auxT->dest == dest_id && auxT->nextHop == nextHop) 
                 return auxT;
         }
     }
@@ -281,20 +304,15 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
     return ftHead;
 }
 
-RoutingTable *createRT(RoutingTable *rtHead, Edge *edgesHead, Event *event){
+RoutingTable *createRT(RoutingTable *rtHead, Edge *edge, Event *event){
 
     int aux_width=0;
     RoutingTable *newRoute = NULL;
-    Edge *edge = NULL;
 
     if((newRoute = (RoutingTable*) calloc(1, sizeof(RoutingTable))) == NULL){   
         printf("It was not possible to allocate memory\n");
         exit(1);
     }
-    edge = searchEdge(edgesHead, event->origin);
-    if(edge == NULL){
-        return NULL;
-    }  
     if(edge->width > event->msg[2]){
         aux_width = event->msg[2];
     }else{
@@ -317,13 +335,31 @@ RoutingTable *createRT(RoutingTable *rtHead, Edge *edgesHead, Event *event){
     return rtHead;
 }
 
+RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l){
 
+    RoutingTable *auxT;
+
+    if(rtHead == NULL){
+        return NULL;
+    }else{     
+        auxT = rtHead;
+        if(auxT->cost_w >= cost_w && auxT->cost_l < cost_l)
+            return auxT;
+        while(auxT->nextDest != NULL){
+            auxT = auxT->nextDest;
+            if(auxT->cost_w >= cost_w && auxT->cost_l < cost_l) 
+                return auxT;
+        }
+    }
+    return NULL;
+}
 
 // Alterar o Update Estimate, ter de percorrer a RT table antes de alterar
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
 
     int aux_width=0;
     Edge *edge = NULL;
+    RoutingTable *node_rt =NULL, *aux=NULL;
 
     edge = searchEdge(edgeHead, event->origin);
     if(edge == NULL){
@@ -339,7 +375,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     }
     //printf("auxwidht=%d\n",aux_width);
     //printf("deswidht=%d\n",dest->cost_w);
-    printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
     if(flag_sim=='l'){
         if(dest->cost_l > event->msg[1] + edge->length){
             dest->cost_l = event->msg[1] + edge->length;
@@ -367,6 +403,14 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
             dest->hop = event->originPointer;
             dest->stab_time = event->An;
             dest->nextHop = event->origin;
+
+            node_rt = searchRoute(dest->nextRoute, event->msg[0], event->origin);
+            if(node_rt == NULL){
+                node_rt = createRT(dest->nextRoute, edge, event);
+                dest->nextRoute = node_rt;
+            }else{ //if it already exists updade cost_l, cost_w nver chages for the same edge
+                node_rt->cost_l = event->msg[1] + edge->length;
+            }
             return dest;
         }else if(dest->cost_w == aux_width){
             if(dest->cost_l > event->msg[1] + edge->length){
@@ -375,11 +419,36 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                 dest->nextHop = event->origin;
                 dest->stab_time = event->An;
                 dest->cost_w = aux_width;
+
+                node_rt = searchRoute(dest->nextRoute, event->msg[0], event->origin);
+                if(node_rt == NULL){
+                    node_rt = createRT(dest->nextRoute, edge, event);
+                    dest->nextRoute = node_rt;
+                }else{ //if it already exists updade cost_l, cost_w nver chages for the same edge
+                    node_rt->cost_l = event->msg[1] + edge->length;
+                }
                 return dest;
             }else if(dest->nextHop == event->origin){
                 //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->stab_time = event->An;
+
+                node_rt = searchRoute(dest->nextRoute, event->msg[0], event->origin);
+                if(node_rt == NULL){
+                    node_rt = createRT(dest->nextRoute, edge, event);
+                    dest->nextRoute = node_rt;
+                }else{ //if it already exists updade cost_l, cost_w nver chages for the same edge
+                    node_rt->cost_l = event->msg[1] + edge->length;
+                }
+
+                aux = searchRouteNeighbour(dest->nextRoute, dest->cost_w, dest->cost_l);
+                if(aux != NULL){
+                    dest->cost_l = aux->cost_l;
+                    dest->cost_w = aux->cost_w;
+                    dest->hop = aux->hop;
+                    dest->nextHop = aux->nextHop;
+                    dest->stab_time = event->An;
+                }
                 //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 return dest;
             }
@@ -389,6 +458,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     }
     //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
 }
+
 
 void printFT(Graph *Head){
 
@@ -424,31 +494,13 @@ void printGraph(Graph *Head){
     }
 }
 
-void resetFT(Node *listHead){
-
-    Node *auxN=listHead;
-    ForwardTable *auxFTHead, *auxFT;
-
-    while(auxN!= NULL){
-        auxFTHead = auxN->nextDest;
-        while(auxFTHead!=NULL){
-            auxFT = auxFTHead;
-            auxFT->cost_l=1000000;
-            auxFT->cost_w=0;
-            auxFT->nextHop = -1;
-            auxFT->hop = NULL;
-            auxFTHead = auxFT->nextDest;
-        }
-        auxN=auxN->nextNode;
-    }
-}
-
 void freeGraph(Node *listHead){
 
     Node *auxN;
     Edge *auxEHeadIn, *auxEIn;
     Edge *auxEHeadOut, *auxEOut;
     ForwardTable *auxFTHead, *auxFT;
+    RoutingTable *auxRTHead, *auxRT;
 
     while(listHead!= NULL){
         auxN=listHead;
@@ -467,6 +519,12 @@ void freeGraph(Node *listHead){
         auxFTHead = listHead->nextDest;
         while(auxFTHead!=NULL){
             auxFT = auxFTHead;
+            auxRTHead = auxFTHead->nextRoute;
+            while(auxRTHead!=NULL){
+                auxRT = auxRTHead;
+                auxRTHead = auxRT->nextDest;
+                free(auxRT);
+            }
             auxFTHead = auxFT->nextDest;
             free(auxFT);
         }

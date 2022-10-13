@@ -53,7 +53,18 @@ typedef struct _ForwardTable{
     float stab_time;
     struct _Node *hop;
     struct _ForwardTable* nextDest;
+    struct _RoutingTable* nextRoute;
 } ForwardTable;
+
+typedef struct _RoutingTable//Info dos vizinhos para o mm destino
+{
+    int dest;
+    int cost_l;
+    int cost_w;
+    int nextHop;
+    struct _Node *hop;
+    struct _RoutingTable* nextDest;
+} RoutingTable;
 
 typedef struct _Event{
     float An;
