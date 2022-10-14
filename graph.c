@@ -337,21 +337,21 @@ RoutingTable *createRT(RoutingTable *rtHead, Edge *edge, Event *event){
 
 RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l){
 
-    RoutingTable *auxT;
+    RoutingTable *auxT, *aux=NULL;
 
     if(rtHead == NULL){
         return NULL;
     }else{     
         auxT = rtHead;
         if(auxT->cost_w >= cost_w && auxT->cost_l < cost_l)
-            return auxT;
+            aux=auxT;
         while(auxT->nextDest != NULL){
             auxT = auxT->nextDest;
             if(auxT->cost_w >= cost_w && auxT->cost_l < cost_l) 
-                return auxT;
+                aux=auxT;
         }
     }
-    return NULL;
+    return aux;
 }
 
 // Alterar o Update Estimate, ter de percorrer a RT table antes de alterar
