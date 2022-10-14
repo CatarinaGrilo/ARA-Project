@@ -48,3 +48,7 @@ void simulationsInteractive(Node *destNode, Event *eventHead){
     }
     return;
 } 
+
+void stats_time(){
+    
+}

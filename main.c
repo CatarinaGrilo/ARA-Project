@@ -67,6 +67,7 @@ int main(int argc, char *argv[]){
                 printf("\n\nShortest-Widest:\n");
                 printFT(graph);
             }
+            
         }
 
         else if(argv[1][1] == 'i'){
@@ -99,10 +100,10 @@ int main(int argc, char *argv[]){
         } 
     }  
 
-    /*if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
+    if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
                 //Widest Shortest
         algorithm(graph->nextNode);
-    }*/
+    }
 
 
     freeGraph(graph->nextNode);

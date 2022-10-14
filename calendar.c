@@ -73,7 +73,7 @@ Event *insertEvent_ordered(Event *Listhead, Event *newEvent){
                 Listhead->nextEvent = newEvent;
             }
             else{
-                while((auxT!=NULL) && (auxT->An < newEvent->An)){
+                while((auxT!=NULL) && (auxT->An <= newEvent->An)){
                     auxH = auxT;
                     auxT = auxT->nextEvent;
                 }
