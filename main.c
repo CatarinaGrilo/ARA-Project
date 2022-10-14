@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
                 printf("\n\nShortest-Widest:\n");
                 printFT(graph);
             }
-            
+            stats(graph);            
         }
 
         else if(argv[1][1] == 'i'){
