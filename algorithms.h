@@ -13,7 +13,7 @@
 
 
 
-void algorithm(Node *nodeHead);
+void algorithm(Node *nodeHead, char mode);
 
 //PriorityQueue* updatePriorityQueue(int dist, Node *node);
 
