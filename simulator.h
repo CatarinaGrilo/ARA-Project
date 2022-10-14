@@ -14,4 +14,6 @@ void simulations(Node *nodeHead, Event *eventHead);
 
 void simulationsIteractive(Node *destNode, Event *eventHead);
 
+void stats(Graph *Head);
+
 #endif

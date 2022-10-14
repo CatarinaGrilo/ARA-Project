@@ -34,9 +34,11 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
 
 RoutingTable *createRT(RoutingTable *rtHead, Edge *edgesHead, Event *event);
 
+RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l);
+
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edge , Event *event);
 
-RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l);
+void printFT(Graph *Head);
 
 void printGraph(Graph *Head);
 
