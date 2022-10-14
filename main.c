@@ -99,10 +99,10 @@ int main(int argc, char *argv[]){
         } 
     }  
 
-    /*if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
+    if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
                 //Widest Shortest
         algorithm(graph->nextNode);
-    }*/
+    }
 
 
     freeGraph(graph->nextNode);

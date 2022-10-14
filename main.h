@@ -29,11 +29,12 @@ typedef struct _Graph{
 
 typedef struct _Node{
     int id;
+    int visited;
     struct _Node *nextNode;
     struct _Edge *nextEdgeOut;
     struct _Edge *nextEdgeIn;
     struct _ForwardTable *nextDest;
-    DistTable* distTable;
+
 } Node;
 
 typedef struct _Edge{
