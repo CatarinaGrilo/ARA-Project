@@ -48,3 +48,27 @@ void simulationsInteractive(Node *destNode, Event *eventHead){
     }
     return;
 } 
+
+void stats(Graph *Head){
+
+    Node *auxN;
+    ForwardTable *auxFT;
+    FILE *fpTime, *fpWidth, *fpLength;
+
+    fpTime = fopen("dados_time.txt","w");
+    fpWidth = fopen("dados_width.txt","w");
+    fpLength = fopen("dados_length.txt","w");
+
+    for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
+        for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
+            fprintf(fpTime,"%f\n", auxFT->stab_time);
+            fprintf(fpWidth,"%d\n", auxFT->cost_w);
+            fprintf(fpLength,"%d\n", auxFT->cost_l);
+        }
+    }
+    fclose(fpTime);
+    fclose(fpWidth);
+    fclose(fpLength);
+    
+    return;
+}
