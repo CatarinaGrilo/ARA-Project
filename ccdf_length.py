@@ -12,9 +12,8 @@ y = 1- y #ccdf
 # plotting
 plt.xlabel('length')
 plt.ylabel('CCDF')
-  
 plt.title('CCDF of the length')
   
-plt.plot(length, y, marker='o')
+plt.plot(length, y)
 plt.show()
 

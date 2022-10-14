@@ -15,6 +15,6 @@ plt.ylabel('CCDF')
   
 plt.title('CCDF of the time')
   
-plt.plot(time, y, marker='o')
+plt.plot(time, y)
 plt.show()
 

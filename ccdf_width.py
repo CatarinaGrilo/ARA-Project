@@ -15,6 +15,6 @@ plt.ylabel('CCDF')
   
 plt.title('CCDF of the width')
   
-plt.plot(width, y, marker='o')
+plt.plot(width, y)
 plt.show()
 
