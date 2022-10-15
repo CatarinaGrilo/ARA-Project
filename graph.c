@@ -245,21 +245,21 @@ ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
 
 RoutingTable *searchRoute(RoutingTable *rtHead, int dest_id, int nextHop){
 
-    RoutingTable *auxT;
+    RoutingTable *auxT, *aux=NULL;
 
     if(rtHead == NULL){
         return NULL;
     }else{     
         auxT = rtHead;
         if(auxT->dest == dest_id && auxT->nextHop == nextHop)
-            return auxT;
+            aux = auxT;
         while(auxT->nextDest != NULL){
             auxT = auxT->nextDest;
             if( auxT->dest == dest_id && auxT->nextHop == nextHop) 
-                return auxT;
+                aux = auxT;
         }
     }
-    return NULL;
+    return aux;
 }
 
 ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event){
