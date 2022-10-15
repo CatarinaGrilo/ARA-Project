@@ -217,9 +217,6 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
         return node->nextDest;
     }else{
         //printf("node=%d\n", node->id);
-        // If not, add it
-        // If yes, update RT
-            // Check if is better estimate, if yes uptadte FT
         node_ft = updateEstimate(node_ft, node->nextEdgeOut, eventsHead);
         return node_ft;
     }
@@ -265,8 +262,6 @@ RoutingTable *searchRoute(RoutingTable *rtHead, int dest_id, int nextHop){
     return NULL;
 }
 
-// COLOCAR FLAG PARA DIFERENCIAR SHORTEST and WIDEST
-// Create RT to append in FT 
 ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event){
 
     int aux_width=0;
@@ -354,7 +349,6 @@ RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l)
     return aux;
 }
 
-// Alterar o Update Estimate, ter de percorrer a RT table antes de alterar
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
 
     int aux_width=0;
@@ -458,7 +452,6 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     }
     //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
 }
-
 
 void printFT(Graph *Head){
 
