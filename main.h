@@ -30,6 +30,7 @@ typedef struct _Graph{
 typedef struct _Node{
     int id;
     int visited;
+    int visitedLength;
     struct _Node *nextNode;
     struct _Edge *nextEdgeOut;
     struct _Edge *nextEdgeIn;

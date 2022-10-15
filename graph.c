@@ -21,6 +21,7 @@ struct Node
 {
     int id;
     int visited;
+    int visitedLength;
     struct Node* nextNode;
     struct Edge* nextEdgeOut;
     struct Edge* nextEdgeIn;
@@ -120,6 +121,8 @@ Node *createNode(int tail){
     } 
     
     newNode->id = tail;
+    newNode->visited = -1;
+    newNode->visitedLength = -1;
     newNode->nextNode = NULL;
     newNode->nextEdgeOut = NULL;
 
@@ -459,10 +462,24 @@ void printFT(Graph *Head){
     ForwardTable *auxFT;
 
     for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
-        printf("Forwarding Table Node %d:\n", auxN->id);
+        printf("\nForwarding Table Node %d:\n", auxN->id);
         printf("Dest\tWidth\tLength\tNextHop\ttime\n");
         for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
             printf("%d\t%d\t%d\t%d\t%f\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop, auxFT->stab_time);
+        }
+    }
+}
+
+void printFT_SW(Graph *Head){
+
+    Node *auxN; 
+    ForwardTable *auxFT;
+
+    for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
+        printf("\nForwarding Table Node %d:\n", auxN->id);
+        printf("Dest\tWidth\tLength\n");
+        for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
+            printf("%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l);
         }
     }
 }

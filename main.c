@@ -7,6 +7,7 @@
 #include "graph.h"
 #include "calendar.h"
 #include "simulator.h"
+#include "shortWidth.h"
 
 
 float time_simul = 0; //
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    //printGraph(graph);
+    printGraph(graph);
 
 
 
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]){
                 simulationsInteractive(auxH, eventsHead);
                 printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
             }
-        } 
+        }
     }  
 
     if( strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'l'){
@@ -108,6 +109,8 @@ int main(int argc, char *argv[]){
         //Shortest Widest
         algorithm(graph->nextNode, 'w');
     }
+    //shortWidth(graph->nextNode);
+    //printFT_SW(graph);
 
 
     freeGraph(graph->nextNode);
