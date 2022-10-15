@@ -20,29 +20,20 @@
 
 typedef struct{
     int dist;
+    int width;
     struct Node* destNode;
+    struct Node* neighbour;
     struct PriorityQueue* next;
 
 } PriorityQueue ;
 
-
-// typedef struct {
-    
-//     int id;
-//     int cost_l;
-//     int cost_w;
-//     struct Node *NextHop;
-//     struct DistTable* next;
-// }  DistTable;
 
 int min(int a, int b){
 
     return (a > b) ? b : a;
 }
 
-
-
-PriorityQueue* createElementPriorityQueue(int dist, Node *node){ 
+PriorityQueue* createElementPriorityQueue(int dist, int width, Node *node, Node *neighbour){ 
 
     PriorityQueue *newElement;
 
@@ -53,20 +44,29 @@ PriorityQueue* createElementPriorityQueue(int dist, Node *node){
     }
 
     newElement->dist = dist;
+    newElement->width = width;
     newElement->destNode = node;
+    newElement->neighbour = neighbour;
     newElement->next = NULL;
 
     return newElement;
 }
 
-PriorityQueue* updatePriorityQueue(PriorityQueue *Head, Edge *edge){ 
+PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neighbour){ 
 
     PriorityQueue *auxH, *auxT, *newElement, *afterHead = NULL;
     Node * aux = edge->destNode;
+    int length, width;
+
+    length = edge->length + neighbour->nextDest->cost_l;
+    width = min(edge->width, neighbour->nextDest->cost_w);
     
-    newElement = createElementPriorityQueue(aux->distTable->cost_l, edge->destNode);
+    newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
     // printf("\n\n\n\n\n\n QUEUE A ANALISAR AGORA \n");
     // printPriorityQueue(Head);
+
+
+    /* Inserir nó ordenadamente*/
 
     if (Head == NULL){
         return newElement;
@@ -81,12 +81,18 @@ PriorityQueue* updatePriorityQueue(PriorityQueue *Head, Edge *edge){
     if(afterHead->dist > newElement->dist){
         newElement->next = afterHead;
         Head->next = newElement;
+        //printf("\n\n\n 1\n\n\n");
         return Head;
     }
     else{
         auxH = afterHead;
         auxT = afterHead->next;
         if (auxT == NULL){
+            if ((auxH->destNode == newElement->destNode) && (auxH->dist <= newElement->dist)){
+                //printf("\n\n\n 2\n\n\n");
+                free(newElement);
+                return Head;
+            }
             afterHead->next = newElement;
         }
         else{
@@ -94,6 +100,7 @@ PriorityQueue* updatePriorityQueue(PriorityQueue *Head, Edge *edge){
                 auxH = auxT;
                 auxT = auxT->next;
             }
+            //printf("\n\n\n 3\n\n\n");
             newElement->next = auxT;
             auxH->next = newElement;
         }
@@ -102,11 +109,67 @@ PriorityQueue* updatePriorityQueue(PriorityQueue *Head, Edge *edge){
    return Head;
 }
 
+PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neighbour){ 
+
+    PriorityQueue *auxH, *auxT, *newElement, *afterHead = NULL;
+    Node * aux = edge->destNode;
+    int length, width;
+
+    length = edge->length + neighbour->nextDest->cost_l;
+    width = min(edge->width, neighbour->nextDest->cost_w);
+    
+    newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+    // printf("\n\n\n\n\n\n QUEUE A ANALISAR AGORA \n");
+    // printPriorityQueue(Head);
+
+
+    /* Inserir nó ordenadamente*/
+
+    if (Head == NULL){
+        return newElement;
+    }
+    else if(Head->next == NULL){
+        Head->next = newElement;
+        return Head;
+    }
+    
+    afterHead = Head->next;
+
+    if(afterHead->dist > newElement->dist){
+        newElement->next = afterHead;
+        Head->next = newElement;
+        printf("\n\n\n 1\n\n\n");
+        return Head;
+    }
+    else{
+        auxH = afterHead;
+        auxT = afterHead->next;
+        if (auxT == NULL){
+            if ((auxH->destNode == newElement->destNode) && (auxH->dist <= newElement->dist)){
+                printf("\n\n\n 2\n\n\n");
+                free(newElement);
+                return Head;
+            }
+            afterHead->next = newElement;
+        }
+        else{
+            while( (auxT!=NULL) && (auxT->dist < newElement->dist)){
+                auxH = auxT;
+                auxT = auxT->next;
+            }
+            printf("\n\n\n 3\n\n\n");
+            newElement->next = auxT;
+            auxH->next = newElement;
+        }
+    }
+
+   return Head;
+}
 
 void printPriorityQueue(PriorityQueue* QueueHead){
 
     PriorityQueue* aux;
-    Node *auxN;
+    Node *auxN, *viz;
     
     printf("=================================================\n QUEUE: \n");
 
@@ -114,12 +177,17 @@ void printPriorityQueue(PriorityQueue* QueueHead){
         aux = QueueHead;
         QueueHead = QueueHead->next;
         auxN = aux->destNode;
-        printf("\nID: %d with distance: %d\n", auxN->id, aux->dist);
+        if (aux->neighbour == NULL){
+            printf("\nID: %d    distance: %d    width %d  \n", auxN->id, aux->dist, aux->width );
+        }
+        else{
+            viz = aux->neighbour;
+            printf("\nID: %d    distance: %d    width %d  neighbour:%d \n", auxN->id, aux->dist, aux->width , viz->id);
+        }
     }
 
     printf("=================================================\n");
 }
-
 
 void freePriorityQueue(PriorityQueue* QueueHead){
 
@@ -131,91 +199,30 @@ void freePriorityQueue(PriorityQueue* QueueHead){
         free(aux);
     }
 }
-
-DistTable* createDistTableEntry(Edge* edge, Node* gotoNode, Node* nodeitself){
     
-    DistTable *newElement;
-    DistTable* destiny = gotoNode->distTable;
+void createDestinysFT(Node* nodeHead){
 
+    ForwardTable *newElement;
 
-    //Create a new element for Priority Queue
-    if((newElement = (DistTable*) calloc(1, sizeof(DistTable))) == NULL){ 
-		printf("It was not possible to allocate memory\n");
-	    exit(1);
-    }
+    while (nodeHead != NULL){
 
-    printf("\n createDistTableEntry nó vizinho: %d \n\n\n", nodeitself->id);
-
-    newElement->id = edge->dest;
-    newElement->cost_l = edge->length + destiny->cost_l;
-    newElement->cost_w = min(edge->width, destiny->cost_w);
-    newElement->NextHop = gotoNode;
-    newElement->next = NULL;
-    nodeitself->distTable = newElement;
-
-    //printf("\n createDistTableEntry nó vizinho: %d \n\n\n", nodeitself->id);
-    printf("DENTrO DISTO id:%d l:%d  w:%d \n", newElement->id, newElement->cost_l, newElement->cost_w);
-
-    return newElement;
-
-}
-    
-DistTable* createSource (Node* node){
-    
-    DistTable *newElement;
-
-    //Create a new element for Priority Queue
-    if((newElement = (DistTable*) calloc(1, sizeof(DistTable))) == NULL){ 
-		printf("It was not possible to allocate memory\n");
-	    exit(1);
-    }
-
-    newElement->id = node->id;
-    newElement->cost_l = 0;
-    newElement->cost_w = 99999;
-    newElement->NextHop = 0;
-    newElement->next = NULL;
-    node->distTable = newElement;
-
-    return newElement;
-
-}
-
-DistTable* searchEntry(DistTable* DistTableHead, int id){
-
-    while(DistTableHead->next != NULL){
-        if (DistTableHead->id == id){
-            return DistTableHead;
+        if((newElement = (ForwardTable*) calloc(1, sizeof(ForwardTable))) == NULL){ 
+            printf("It was not possible to allocate memory\n");
+            exit(1);
         }
-        DistTableHead = DistTableHead->next;
+
+        newElement->dest = nodeHead->id;
+        newElement->cost_l = 0;
+        newElement->cost_w = 1000000;
+        newElement->nextHop = 0;
+        newElement->nextDest = NULL;
+
+        nodeHead->nextDest = newElement;
+        nodeHead->visited = 0;
+
+        nodeHead = nodeHead->nextNode;
     }
 
-    return DistTableHead;
-}
-
-//DistTable* insertEntryintheEnd(DistTable* DistTableHead)
-
-DistTable* updateDistTable(DistTable* DistTableHead, Edge *auxE, Node* gotoNode, Node* nodeitself){
-
-    DistTable * newElement = NULL, *aux = NULL;
-
-    // if(DistTableHead->next == NULL){
-    //     DistTableHead = createDistTableEntry(DistTableHead, auxE, gotoNode);
-    //     return DistTableHead;
-    // }else{
-        
-    // }
-
-    aux = searchEntry(DistTableHead, auxE->dest);
-    if (aux->next == NULL){
-        printf("\nNAO ENCONTREI O 6\n");
-        aux->next = createDistTableEntry(auxE, gotoNode, nodeitself);
-        return DistTableHead;
-    }
-
-
-
-    return DistTableHead;
 }
 
 void freeDistTable(DistTable* DistTableHead){
@@ -251,14 +258,62 @@ void printDistTable(DistTable* DistTableHead){
     printf("------------------------------------------------\n\n\n\n");
 }
 
+void resetNodeVisited(Node *Head){
 
+    while (Head != NULL){
+        Head->visited = 0;
+        Head = Head->nextNode;
+    }
+}
 
-void algorithm(Node *nodeHead){
+void printForwardTable(Node *Head){
+
+    Node *auxN, *auxHOP; 
+    ForwardTable *auxFT;
+
+    for(auxN=Head; auxN!=NULL; auxN=auxN->nextNode){
+        printf("Forwarding Table Node %d:\n", auxN->id);
+        printf("Dest\tWidth\tLength\tNextHop\n");
+        for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
+            auxHOP = auxFT->nextHop;
+            if (auxHOP == NULL){
+                printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxHOP);
+            }else{
+                printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxHOP->id);
+            }
+        }
+    }
+}
+
+void updateForwardTable_a(Node *node, PriorityQueue *element, Node *nextHop, Node *destiny){
+
+    ForwardTable *newElement;
+
+    if((newElement = (ForwardTable*) calloc(1, sizeof(ForwardTable))) == NULL){ 
+        printf("It was not possible to allocate memory\n");
+        exit(1);
+    }
+
+    newElement->dest = destiny->id;
+    newElement->cost_l = element->dist;
+    newElement->cost_w = element->width;
+    newElement->nextHop = nextHop;
+    newElement->nextDest = NULL;
+
+    if(node->nextDest == NULL){
+        node->nextDest = newElement;
+    }
+    else{
+        newElement->nextDest = node->nextDest;
+        node->nextDest = newElement;
+    }
+}
+
+void algorithm(Node *nodeHead, char mode){
 
     PriorityQueue* QueueHead = NULL;
     PriorityQueue* auxQ = NULL;
-    DistTable* DistTableHead = NULL, *auxD;
-    Node* auxN = NULL;
+    Node* auxN = NULL, *node = nodeHead;
     Edge* auxE = NULL;
     int i = 0;
 
@@ -267,56 +322,67 @@ void algorithm(Node *nodeHead){
     }
     else{
         
-        printf("\nID:%d\n", nodeHead->id);
-        DistTableHead = createSource(nodeHead);
-        QueueHead = createElementPriorityQueue(0, nodeHead);
-        //nodeHead->distTable = DistTableHead;
-        // auxD = nodeHead->distTable;
-        // printf("IS TABLE WORKING? %d\n\n\n ", auxD->id );
-        printf("\n\nQUEUE HEADID:%d\n", nodeHead->id);
-        //updatePriorityQueue(0, nodeHead);
-        printf("\n\nHEY ALGORITHM\n");
+        
+        for(node = nodeHead; node != NULL; node = node->nextNode){
+      
+            resetNodeVisited(nodeHead);
+            QueueHead = createElementPriorityQueue(0, 100000, node, NULL);
+            
+            // printf("\n\n\n\n VELHOOOOOOOOOOOo \n\n\n\n\n");
+            // printf("\nID:%d\n", node->id);
+            // printPriorityQueue(QueueHead);
 
-        //for(auxQ=QueueHead; auxQ!=NULL; auxQ=auxQ->next){
-        //while(QueueHead != NULL){  
-        printPriorityQueue(QueueHead);
-        printDistTable(DistTableHead);
 
-        //while(i != 6){
-        while(QueueHead != NULL){ 
-            auxQ = QueueHead;
-            auxN = auxQ->destNode;
-            printf("ID IS %d\n\n\n ", auxN->id);
-            for(auxE=auxN->nextEdgeIn; auxE!=NULL; auxE=auxE->nextEdge){
-                printf("%d\t%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length, auxE->destNode->id);
-                
-                printf("\nNó a analisar %d \n", auxN->id);
-                if (auxE->dest !=nodeHead->id){
-                    DistTableHead = updateDistTable(DistTableHead, auxE, auxN, auxE->destNode);
-                    QueueHead = updatePriorityQueue(QueueHead, auxE);
+            while(QueueHead != NULL){ 
+                auxQ = QueueHead;
+                auxN = auxQ->destNode;
+
+                if (auxN->visited != 1){
                     
-                    printf("\nTerceiro\n");
-                    printPriorityQueue(QueueHead);
-                    printDistTable(DistTableHead);
+                    auxN->visited = 1; 
+                    updateForwardTable_a(auxN, QueueHead, QueueHead->neighbour, node);
+                    
+                    // printForwardTable(nodeHead);
+                    // printf("ID IS %d\n\n\n ", auxN->id);
+
+                    for(auxE=auxN->nextEdgeIn; auxE!=NULL; auxE=auxE->nextEdge){
+
+                        // printf("%d\t%d\t%d\t%d\n", auxE->dest, auxE->width, auxE->length, auxE->destNode->id);          
+                        // printf("\nNó a analisar %d \n", auxN->id);
+                        // printf("\nANTES\n");
+                        // printPriorityQueue(QueueHead);
+
+                        if (mode == 'l'){
+                            QueueHead = updatePriorityQueue_l(QueueHead, auxE, auxN);
+                        }
+                        else if(mode == 'w'){
+                            QueueHead = updatePriorityQueue_w(QueueHead, auxE, auxN);
+                        }
+
+
+                        // printf("\n DEPOIS \n");
+                        // printPriorityQueue(QueueHead);
+                        // printf("\n DEPOIS DEPOIS \n");
+                        // printForwardTable(nodeHead);
+
+                    }
                 }
-
+                
+                QueueHead = QueueHead->next;
+                free(auxQ);
+                
             }
-            QueueHead = QueueHead->next;
-            free(auxQ);
-            i++;
+            
+            // printf("\nENDDDDDDDDDDDDDDD\n");
+            // printPriorityQueue(QueueHead);
+            // printForwardTable(nodeHead);
+        
+            freePriorityQueue(QueueHead);
+
+
         }
-        
-        printf("\nENDDDDDDDDDDDDDDD\n");
 
-        printPriorityQueue(QueueHead);
-
-
-
-        freeDistTable(DistTableHead);
-        
-        freePriorityQueue(QueueHead);
-
-
+        printForwardTable(nodeHead);
     }
 }
 

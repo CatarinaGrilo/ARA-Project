@@ -20,11 +20,11 @@ struct Graph
 struct Node
 {
     int id;
+    int visited;
     struct Node* nextNode;
     struct Edge* nextEdgeOut;
     struct Edge* nextEdgeIn;
     struct ForwardTable* nextDest;
-    struct DistTable* distTable;
 };
 
 // Data structure to store a graph edge

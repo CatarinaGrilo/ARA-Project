@@ -100,9 +100,13 @@ int main(int argc, char *argv[]){
         } 
     }  
 
-    if( strlen(argv[1]) == 2  && argv[1][0] == '-' && argv[1][1] == 'a'){
-                //Widest Shortest
-        algorithm(graph->nextNode);
+    if( strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'l'){
+        //Widest Shortest
+        algorithm(graph->nextNode, 'l');
+    }
+    else if(strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'w'){
+        //Shortest Widest
+        algorithm(graph->nextNode, 'w');
     }
 
 
