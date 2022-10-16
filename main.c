@@ -108,9 +108,12 @@ int main(int argc, char *argv[]){
     else if(strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'w'){
         //Shortest Widest
         algorithm(graph->nextNode, 'w');
+    }else if(strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'o'){
+        //Shortest Widest optimal
+        shortWidth(graph->nextNode);
+        printFT_SW(graph);
     }
-    //shortWidth(graph->nextNode);
-    //printFT_SW(graph);
+    
 
 
     freeGraph(graph->nextNode);

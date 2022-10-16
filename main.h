@@ -31,6 +31,7 @@ typedef struct _Node{
     int id;
     int visited;
     int visitedLength;
+    int visitedLength_aux;
     struct _Node *nextNode;
     struct _Edge *nextEdgeOut;
     struct _Edge *nextEdgeIn;
@@ -50,6 +51,7 @@ typedef struct _Edge{
 typedef struct _ForwardTable{
     int dest;
     int cost_l;
+    int length_aux;
     int cost_w;
     int nextHop;
     float stab_time;

@@ -24,9 +24,9 @@ typedef struct _toAnalise{
 }toAnalise;
 
 typedef struct _queueLength{
-    int widthAllowed;
     int length;
-    int source;
+    int width;
+    int dest;
     struct _Node *destPointer;
     struct _queueLength *next;
 } queueLength;
@@ -39,25 +39,27 @@ toAnalise *createtoAnalise(toAnalise *head, Node *node, int width);
 
 toAnalise *insertAnalise(toAnalise *head, toAnalise *newElem);
 
-queueLength *createQueueLength(queueLength *head, Edge *neighbour, int source , int length);
+queueLength *createQueueLength(queueLength *head, Edge *neighbour, int dest, int length);
 
-queueLength *insertQueueLength(queueLength *head, queueLength *newElem);
+queueLength *insertQueueLength_ordered(queueLength *head, queueLength *newElem);
 
 void shortWidth(Node *nodeHead);
 
-void dijkstraBackWidth(queueWidth *head, Node *nodeDest);
+toAnalise *dijkstraBackWidth(queueWidth *head, Node *nodeDest, toAnalise *headAnalise);
 
-int dijkstraLength(queueLength *head, toAnalise *headAnalise, int visited);
+void dijkstraBackLength(queueLength *head, Node *nodeDest, toAnalise *headAnalise);
 
 queueWidth *nodeDestiny(queueWidth *head, Node *nodeDest);
 
-queueLength *nodeSource(queueLength *head, Node *nodeSource, int withAllowed, int visited);
+queueLength *nodeDestinyLenght(queueLength *head, Node *nodeDest, toAnalise *headAnalise);
 
 queueWidth *analiseQueue(queueWidth *head);
 
-queueLength *analiseQueueLength(queueLength *head, int visited, int withAllowed);
+queueLength *analiseQueueLength(queueLength *head, toAnalise *headAnalise);
 
 ForwardTable *updateFT_SW(Node *node, queueWidth *head);
+
+int updateFT_SW_Length(Node *node, queueLength *head, toAnalise *headAnalise);
 
 ForwardTable *newDestiny(ForwardTable *ftHead, queueWidth *head);
 
