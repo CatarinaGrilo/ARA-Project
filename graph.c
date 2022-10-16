@@ -22,6 +22,7 @@ struct Node
     int id;
     int visited;
     int visitedLength;
+    int visitedLength_aux;
     struct Node* nextNode;
     struct Edge* nextEdgeOut;
     struct Edge* nextEdgeIn;
@@ -43,6 +44,7 @@ struct ForwardTable
 {
     int dest;
     int cost_l;
+    int length_aux;
     int cost_w;
     int nextHop;
     float stab_time;

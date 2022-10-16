@@ -16,16 +16,16 @@ struct queueWidth{
     struct _queueWidth *next;
 };
 
-//Queue to do dijkstra forward to find length, after finding the width
 struct toAnalise{
     int widthAllowed;
     struct _Node *node;
     struct _toAnalise *next;
 };
 
+//Queue to do dijkstra forward to find length, after finding the width
 struct queueLength{
     int length;
-    int source;
+    int dest;
     struct _Node *destPointer;
     struct _queueLength *next;
 };
@@ -50,7 +50,7 @@ queueWidth *createQueueWidth(queueWidth *head, Edge *neighbour, int dest ,int wi
     newElem->dest = dest;
     newElem->destPointer = neighbour->destNode;
     newElem->next = NULL;
-
+    //printf("Criou: node=%d, width=%d\n", newElem->destPointer->id, neighbour->width);
     head = insertQueueWidth_ordered(head, newElem);
     return head;
 }
@@ -119,7 +119,7 @@ toAnalise *insertAnalise(toAnalise *head, toAnalise *newElem){
     return head;
 }
 
-queueLength *createQueueLength(queueLength *head, Edge *neighbour, int source , int length){
+queueLength *createQueueLength(queueLength *head, Edge *neighbour, int dest, int length){
 
     queueLength *newElem = NULL;
     
@@ -129,14 +129,14 @@ queueLength *createQueueLength(queueLength *head, Edge *neighbour, int source , 
     };
     newElem->length = length + neighbour->length;
     newElem->destPointer = neighbour->destNode;
-    newElem->source = source;
+    newElem->dest = dest;
     newElem->next = NULL;
-    //printf("Criou: node=%d, length=%d, width=%d\n", newElem->destPointer->id, newElem->length, neighbour->width);
-    head = insertQueueLength(head, newElem);
+    //Criou: node=%d, length=%d, width=%d\n", newElem->destPointer->id, newElem->length, neighbour->width);
+    head = insertQueueLength_ordered(head, newElem);
     return head;
 }
 
-queueLength *insertQueueLength(queueLength *head, queueLength *newElem){
+queueLength *insertQueueLength_ordered(queueLength *head, queueLength *newElem){
 
     queueLength *auxH, *auxT;
 
@@ -169,28 +169,38 @@ queueLength *insertQueueLength(queueLength *head, queueLength *newElem){
 void shortWidth(Node *nodeHead){
     
     Node *auxT = NULL; 
-    queueWidth *queueHead = NULL;
+    queueWidth *queueHeadW = NULL;
+    queueLength *queueHeadL = NULL;
+    toAnalise *headAnalise=NULL;
     
     if(nodeHead == NULL){
         return;
     }else{
         auxT = nodeHead;
-        dijkstraBackWidth(queueHead, auxT);
+        headAnalise = dijkstraBackWidth(queueHeadW, auxT, headAnalise);
+        while(headAnalise!=NULL){
+            //printf("ANALISE: WIDTH ALLOWED=%d", headAnalise->widthAllowed);
+            dijkstraBackLength(queueHeadL, auxT, headAnalise);
+            headAnalise = popAnalise(headAnalise);
+        }
         while( auxT->nextNode != NULL){
             auxT = auxT->nextNode;
-            dijkstraBackWidth(queueHead, auxT);
+            headAnalise = dijkstraBackWidth(queueHeadW, auxT, headAnalise);
+            while(headAnalise!=NULL){
+                //printf("ANALISE: WIDTH ALLOWED=%d", headAnalise->widthAllowed);
+                dijkstraBackLength(queueHeadL, auxT, headAnalise);
+                headAnalise = popAnalise(headAnalise);
+            }
         }
     }
     return;
 }
 
-void dijkstraBackWidth(queueWidth *head, Node *nodeDest){
-    
-    toAnalise *headAnalise=NULL;
-    queueLength *queueHead = NULL;
+toAnalise *dijkstraBackWidth(queueWidth *head, Node *nodeDest, toAnalise *headAnalise){
 
+
+    printf("no destino %d\n",nodeDest->id);
     head = nodeDestiny(head, nodeDest);
-    printf("\nno destino %d\n",nodeDest->id);
     while(head != NULL){
         if(head->destPointer->visited != head->dest){
             //printf("width=%d, dest=%d, choosen=%d\n", head->width, head->dest ,head->destPointer->id);
@@ -199,30 +209,22 @@ void dijkstraBackWidth(queueWidth *head, Node *nodeDest){
         }
         head = popQueueWidth(head);    
     }
-    while(headAnalise != NULL){
-        headAnalise->node->nextDest->cost_l = dijkstraLength(queueHead, headAnalise, nodeDest->id);
-        headAnalise  = popAnalise(headAnalise);    
-    }
-
-    return;
+    return headAnalise;
 }
 
-int dijkstraLength(queueLength *head, toAnalise *headAnalise, int visited){
+void dijkstraBackLength(queueLength *head, Node *nodeDest, toAnalise *headAnalise){
 
-    Node *aux = headAnalise->node;
-
-    printf("no source %d\n",aux->id);
-    head = nodeSource(head, aux, headAnalise->widthAllowed, visited);
+    
+    //printf("\n-----Analise node=%d-----\n",headAnalise->node->id);
+    head = nodeDestinyLenght(head, nodeDest, headAnalise);
     while(head != NULL){
-       //printf("lenght=%d, source=%d, choosen=%d\n", head->length, head->source, head->destPointer->id);
-        if(head->destPointer->id == visited){
-            return head->length;
-        }else if(head->destPointer->visitedLength != visited){
-            head = analiseQueueLength(head, visited, headAnalise->widthAllowed);
+        if(head->destPointer->visitedLength != head->dest || head->destPointer->visitedLength_aux!=headAnalise->node->id){
+            //printf("length=%d, dest=%d, choosen=%d\n", head->length, head->dest ,head->destPointer->id);
+            head = analiseQueueLength(head, headAnalise);
         }
         head = popQueueLength(head);    
     }
-    return -1;
+    return;
 }
 
 queueWidth *nodeDestiny(queueWidth *head, Node *nodeDest){
@@ -242,25 +244,20 @@ queueWidth *nodeDestiny(queueWidth *head, Node *nodeDest){
     return head;
 }
 
-queueLength *nodeSource(queueLength *head, Node *nodeSource, int withAllowed, int visited){
+queueLength *nodeDestinyLenght(queueLength *head, Node *nodeDest, toAnalise *headAnalise){
 
-    Edge *outNeighbour;
-
-    if(nodeSource == NULL || nodeSource->nextEdgeOut == NULL){
+    Edge *inNeighbour;
+    if(nodeDest == NULL || nodeDest->nextEdgeIn==NULL){
         return head;
     }else{
-        outNeighbour = nodeSource->nextEdgeOut;
-        if(outNeighbour->width >= withAllowed){
-            head = createQueueLength(head, outNeighbour, nodeSource->id, 0);
-            if(head->destPointer->id == visited)
-                return head;
+        inNeighbour = nodeDest->nextEdgeIn;
+        if(headAnalise->widthAllowed <= inNeighbour->width){
+            head = createQueueLength(head, inNeighbour, nodeDest->id ,0);
         }
-        while(outNeighbour->nextEdge != NULL){
-            outNeighbour = outNeighbour->nextEdge;
-            if(outNeighbour->width >= withAllowed){
-                head = createQueueLength(head, outNeighbour, nodeSource->id, 0);
-                if(head->destPointer->id == visited)
-                    return head;
+        while(inNeighbour->nextEdge != NULL){
+            inNeighbour = inNeighbour->nextEdge;
+            if(headAnalise->widthAllowed <= inNeighbour->width){
+                head = createQueueLength(head, inNeighbour, nodeDest->id ,0);
             }
         }
     }
@@ -277,39 +274,43 @@ queueWidth *analiseQueue(queueWidth *head){
     node_Ftable = updateFT_SW(node, head);
     if (node_Ftable != NULL && node->nextEdgeIn!=NULL){
         inNeighbour = node->nextEdgeIn;
-        head = createQueueWidth(head, inNeighbour, head->dest, node_Ftable->cost_w);
+        if(inNeighbour->dest != head->dest){
+            head = createQueueWidth(head, inNeighbour, head->dest, node_Ftable->cost_w);
+        }
         while(inNeighbour->nextEdge != NULL){
             inNeighbour = inNeighbour->nextEdge;
-            head = createQueueWidth(head, inNeighbour, head->dest, node_Ftable->cost_w);
+            if(inNeighbour->dest != head->dest){
+                head = createQueueWidth(head, inNeighbour, head->dest, node_Ftable->cost_w);
+            }
         }
     }
     node->visited=head->dest;
     return head;
 }
 
-queueLength *analiseQueueLength(queueLength *head, int visited, int withAllowed){
+queueLength *analiseQueueLength(queueLength *head, toAnalise *headAnalise){
    
     Node *node = NULL;
-    Edge *outNeighbour;
+    Edge *inNeighbour;
+    int length;
 
     node = head->destPointer;
-    if (node->nextEdgeOut!=NULL){
-        outNeighbour = node->nextEdgeOut;
-        if(outNeighbour->width >= withAllowed){
-            head = createQueueLength(head, outNeighbour, head->source, head->length);
-            if(head->destPointer->id == visited)
-                return head;
+    length = updateFT_SW_Length(node, head, headAnalise);
+    //printf("analise length=%d\n",length);
+    if (length!=-1 && node->nextEdgeIn!=NULL){
+        inNeighbour = node->nextEdgeIn;
+        if(inNeighbour->dest != head->dest && headAnalise->widthAllowed <=inNeighbour->width){
+            head = createQueueLength(head, inNeighbour, head->dest, length);
         }
-        while(outNeighbour->nextEdge != NULL){
-            outNeighbour = outNeighbour->nextEdge;
-            if(outNeighbour->width >= withAllowed){
-                head = createQueueLength(head, outNeighbour, head->source, head->length);
-                if(head->destPointer->id == visited)
-                    return head;
+        while(inNeighbour->nextEdge != NULL){
+            inNeighbour = inNeighbour->nextEdge;
+            if(inNeighbour->dest != head->dest && headAnalise->widthAllowed <=inNeighbour->width){
+                head = createQueueLength(head, inNeighbour, head->dest, length);
             }
         }
     }
-    node->visited=visited;
+    node->visitedLength=head->dest;
+    node->visitedLength_aux=headAnalise->node->id;
     return head;
 }
 
@@ -332,6 +333,29 @@ ForwardTable *updateFT_SW(Node *node, queueWidth *head){
 
 }
 
+int updateFT_SW_Length(Node *node, queueLength *head, toAnalise *headAnalise){
+
+    ForwardTable *node_ft = NULL;
+
+    if(node->visitedLength!=headAnalise->node->id && node->id==headAnalise->node->id){
+        node_ft = searchDestiny(node->nextDest, head->dest);
+        if(node_ft->cost_l > head->length){
+            node_ft->cost_l = head->length;
+            //printf("TABELA:node=%d length=%d\n", node->id, node_ft->cost_l);
+            return node_ft->cost_l;
+        }
+    }
+    node_ft = searchDestiny(node->nextDest, head->dest);
+    //printf("Update:node=%d length=%d length_node=%d\n", node->id, head->length, node_ft->length_aux);
+    if(node_ft->length_aux >= head->length){
+        node_ft->length_aux = head->length;
+        //printf("Update2:node=%d length=%d length_node=%d\n", node->id, head->length, node_ft->length_aux);
+        return node_ft->length_aux;
+    }
+    return -1;
+
+}
+
 ForwardTable *newDestiny(ForwardTable *ftHead, queueWidth *head){
 
     ForwardTable *newDest = NULL;
@@ -342,6 +366,7 @@ ForwardTable *newDestiny(ForwardTable *ftHead, queueWidth *head){
     }
     newDest->dest = head->dest;
     newDest->cost_l = 100000000;
+    newDest->length_aux = 100000000;
     newDest->cost_w = head->width;
     newDest->nextHop = -1;
     newDest->stab_time = 0;

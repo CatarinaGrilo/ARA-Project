@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    printGraph(graph);
+    //printGraph(graph);
 
 
 
@@ -109,8 +109,8 @@ int main(int argc, char *argv[]){
         //Shortest Widest
         algorithm(graph->nextNode, 'w');
     }
-    //shortWidth(graph->nextNode);
-    //printFT_SW(graph);
+    shortWidth(graph->nextNode);
+    printFT_SW(graph);
 
 
     freeGraph(graph->nextNode);
