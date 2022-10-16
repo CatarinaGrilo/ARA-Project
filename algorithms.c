@@ -18,14 +18,16 @@
  * 
  *****************************************************************************/
 
-typedef struct{
+typedef struct PriorityQueue PriorityQueue;
+
+struct PriorityQueue{
     int dist;
     int width;
     struct Node* destNode;
     struct Node* neighbour;
-    struct PriorityQueue* next;
+    PriorityQueue* next;
 
-} PriorityQueue ;
+};
 
 
 int min(int a, int b){
@@ -390,7 +392,6 @@ void algorithm(Node *nodeHead, char mode){
     PriorityQueue* auxQ = NULL;
     Node* auxN = NULL, *node = nodeHead;
     Edge* auxE = NULL;
-    int i = 0;
 
     if(nodeHead == NULL){
         return;
