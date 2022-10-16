@@ -478,4 +478,3 @@ void algorithm(Node *nodeHead, char mode){
 }
 
 
-
