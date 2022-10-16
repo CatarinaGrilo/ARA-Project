@@ -8,6 +8,7 @@
 #include "calendar.h"
 #include "simulator.h"
 #include "shortWidth.h"
+#include "algorithms.h"
 
 
 float time_simul = 0; //

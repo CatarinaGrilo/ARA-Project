@@ -18,17 +18,6 @@
  * 
  *****************************************************************************/
 
-typedef struct PriorityQueue PriorityQueue;
-
-struct PriorityQueue{
-    int dist;
-    int width;
-    struct Node* destNode;
-    struct Node* neighbour;
-    PriorityQueue* next;
-
-};
-
 
 int min(int a, int b){
 
@@ -57,7 +46,7 @@ PriorityQueue* createElementPriorityQueue(int dist, int width, Node *node, Node 
 PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neighbour){ 
 
     PriorityQueue *auxH, *auxT, *newElement, *afterHead = NULL;
-    Node * aux = edge->destNode, *node;
+    Node *node;
     int length, width;
 
     /* Values of new element of Queue*/
@@ -145,7 +134,7 @@ PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neig
 PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neighbour){ 
 
     PriorityQueue *auxH, *auxT, *newElement, *afterHead = NULL;
-    Node * aux = edge->destNode, *node;
+    Node *node;
     int length, width;
 
     /* Values of new element of Queue*/
@@ -242,7 +231,6 @@ PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neig
    return Head;
 }
 
-
 void printPriorityQueue(PriorityQueue* QueueHead){
 
     PriorityQueue* aux;
@@ -302,39 +290,6 @@ void createDestinysFT(Node* nodeHead){
 
 }
 
-void freeDistTable(DistTable* DistTableHead){
-
-    DistTable* aux;
-
-    while(DistTableHead!= NULL){
-        aux = DistTableHead;
-        DistTableHead = DistTableHead->next;
-        free(aux);
-    }
-}
-
-void printDistTable(DistTable* DistTableHead){
-
-    DistTable* aux;
-    Node *auxN;
-
-    printf("------------------------------------------------\nIn DIST TABLE: \n");
-
-    while(DistTableHead != NULL){
-        aux = DistTableHead;
-        DistTableHead = DistTableHead->next;
-        auxN = aux->NextHop;
-        if (auxN == NULL){
-            printf("\nid: %d\t length: %d  width: %d\n", aux->id, aux->cost_l, aux->cost_w );
-        }
-        else{
-            printf("\nid: %d\t length: %d  width: %d Next HOP: %d\n", aux->id, aux->cost_l, aux->cost_w, auxN->id );
-        }
-    }
-
-    printf("------------------------------------------------\n\n\n\n");
-}
-
 void resetNodeVisited(Node *Head){
 
     while (Head != NULL){
@@ -352,9 +307,9 @@ void printForwardTable(Node *Head){
         printf("Forwarding Table Node %d:\n", auxN->id);
         printf("Dest\tWidth\tLength\tNextHop\n");
         for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
-            auxHOP = auxFT->nextHop;
+            auxHOP = auxFT->hop;
             if (auxHOP == NULL){
-                printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxHOP);
+                printf("%d\t%d\t%d\t\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l);
             }else{
                 printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxHOP->id);
             }
@@ -374,7 +329,10 @@ void updateForwardTable_a(Node *node, PriorityQueue *element, Node *nextHop, Nod
     newElement->dest = destiny->id;
     newElement->cost_l = element->dist;
     newElement->cost_w = element->width;
-    newElement->nextHop = nextHop;
+    if(nextHop != NULL){
+        newElement->nextHop = nextHop->id;
+        newElement->hop = nextHop;
+    }
     newElement->nextDest = NULL;
 
     if(node->nextDest == NULL){
@@ -399,16 +357,6 @@ void algorithm(Node *nodeHead, char mode){
     else{
         
         
-        // node = node->nextNode; //1
-        // node = node->nextNode; //2
-        // node = node->nextNode; //3
-        // node = node->nextNode; //4
-        // node = node->nextNode; //5
-        // node = node->nextNode; //6
-        // node = node->nextNode; //7
-        // node = node->nextNode; //8
-        // node = node->nextNode; //9
-        // node = node->nextNode; //9
         // printf("\n\n\n\n NOVO \n\n\n\n\n");
         
         for(node = nodeHead; node != NULL; node = node->nextNode){
