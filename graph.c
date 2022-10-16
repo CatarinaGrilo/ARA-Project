@@ -221,7 +221,7 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
         }
         return node->nextDest;
     }else{
-        //printf("node=%d\n", node->id);
+        printf("node=%d\n", node->id);
         node_ft = updateEstimate(node_ft, node->nextEdgeOut, eventsHead);
         return node_ft;
     }
@@ -374,7 +374,8 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     }
     //printf("auxwidht=%d\n",aux_width);
     //printf("deswidht=%d\n",dest->cost_w);
-    //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    printf("event: origin=%d, length=%d, width=%d\n", event->origin, event->msg[1], event->msg[2]);
     if(flag_sim=='l'){
         if(dest->cost_l > event->msg[1] + edge->length){
             dest->cost_l = event->msg[1] + edge->length;
@@ -412,34 +413,25 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
             }
             return dest;
         }else if(dest->cost_w == aux_width){
+
+            node_rt = searchRoute(dest->nextRoute, event->msg[0], event->origin);
+            if(node_rt == NULL){
+                node_rt = createRT(dest->nextRoute, edge, event);
+                dest->nextRoute = node_rt;
+            }else{ //if it already exists updade cost_l, cost_w nver chages for the same edge
+                node_rt->cost_l = event->msg[1] + edge->length;
+            }
             if(dest->cost_l > event->msg[1] + edge->length){
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->hop = event->originPointer;
                 dest->nextHop = event->origin;
                 dest->stab_time = event->An;
                 dest->cost_w = aux_width;
-
-                node_rt = searchRoute(dest->nextRoute, event->msg[0], event->origin);
-                if(node_rt == NULL){
-                    node_rt = createRT(dest->nextRoute, edge, event);
-                    dest->nextRoute = node_rt;
-                }else{ //if it already exists updade cost_l, cost_w nver chages for the same edge
-                    node_rt->cost_l = event->msg[1] + edge->length;
-                }
                 return dest;
             }else if(dest->nextHop == event->origin){
-                //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+                printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->stab_time = event->An;
-
-                node_rt = searchRoute(dest->nextRoute, event->msg[0], event->origin);
-                if(node_rt == NULL){
-                    node_rt = createRT(dest->nextRoute, edge, event);
-                    dest->nextRoute = node_rt;
-                }else{ //if it already exists updade cost_l, cost_w nver chages for the same edge
-                    node_rt->cost_l = event->msg[1] + edge->length;
-                }
-
                 aux = searchRouteNeighbour(dest->nextRoute, dest->cost_w, dest->cost_l);
                 if(aux != NULL){
                     dest->cost_l = aux->cost_l;
@@ -448,7 +440,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                     dest->nextHop = aux->nextHop;
                     dest->stab_time = event->An;
                 }
-                //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+                printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 return dest;
             }
             return NULL;
