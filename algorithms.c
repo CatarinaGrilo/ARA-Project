@@ -63,6 +63,11 @@ PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neig
     width = min(edge->width, neighbour->nextDest->cost_w);
     node = edge->destNode;
 
+    /* Se o nó já foi visitado não interessa colocar na Queue */
+    if ( edge->destNode->visited == 1){
+        return Head;
+    }
+
     /* Inserir nó ordenadamente*/
 
     if (Head == NULL){
@@ -81,48 +86,51 @@ PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neig
         newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
         newElement->next = afterHead;
         Head->next = newElement;
-        //printf("\n\n\n 1\n\n\n");
+        printf("\n\n\n 1\n\n\n");
         return Head;
     }
     else{
         auxH = afterHead;
         auxT = afterHead->next;
         if (auxT == NULL){
+            printf("\n\n\n 2\n\n\n");
             if(auxH->destNode == node) {
-                if(auxH->dist < length){
+                if(auxH->dist < length){  //AfterHead better length than new node          
                     return Head;
-                }else if (auxH->dist == length){
-                    if(auxH->width >= width){
-                        return Head;
-                    }
-                    /*else  width pior
-                        não vou adicionar na queue pq o valor é pior*/
+                }else if (afterHead->dist == length && afterHead->width >= width){ //AfterHead same length better width than new node
+                    return Head;
+                }else{ // AfterHead is worse than incoming node => replace by new node
+                    Head->next = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+                    free(auxH);
+                    return Head;
                 }
-                /*else   length pior
-                    não vou adicionar na queue pq o valor é pior*/
             }
             newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
             afterHead->next = newElement;
         }
         else{
-            while( (auxT!=NULL) && (auxT->dist < length)){
+
+           while( (auxT!=NULL) && (auxT->dist <= length)){
 
                 if(auxT->destNode == node) {
-                    if(auxT->dist < length){
+                    if(auxT->dist < length){ // AuxT better length than new node
                         return Head;
-                    }else if (auxT->dist == length){
-                        if(auxT->width >= width){
+                    }else if (auxT->dist == length && auxT->width >= width){ // AuxT same length, better width than new node
                             return Head;
-                        }
-                        /*else  width pior
-                            não vou adicionar na queue pq o valor é pior*/
                     }
-                    /*else   length pior
-                        não vou adicionar na queue pq o valor é pior*/
+                    else{ // AuxT is worse than new node => replace by new node
+                        newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+                        auxH->next = newElement;
+                        newElement->next = auxT->next;
+                        free(auxT);
+                        return Head;                    
+                    }
                 }
                 auxH = auxT;
                 auxT = auxT->next;
             }
+           
+            printf("\n\n\n\n 3  \n\n\n\n");
             newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
             newElement->next = auxT;
             auxH->next = newElement;
@@ -132,11 +140,10 @@ PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neig
    return Head;
 }
 
-
 PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neighbour){ 
 
-    PriorityQueue *auxH, *auxT, *newElement, *afterHead = NULL, *H, *T, *aux2;
-    Node * aux = edge->destNode, *node ;
+    PriorityQueue *auxH, *auxT, *newElement, *afterHead = NULL;
+    Node * aux = edge->destNode, *node;
     int length, width;
 
     /* Values of new element of Queue*/
@@ -144,7 +151,11 @@ PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neig
     width = min(edge->width, neighbour->nextDest->cost_w);
     node = edge->destNode;
 
-    
+    /* Se o nó já foi visitado não interessa colocar na Queue */
+    if ( edge->destNode->visited == 1){
+        return Head;
+    }
+
     /* Inserir nó ordenadamente*/
 
     if (Head == NULL){
@@ -159,85 +170,63 @@ PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neig
     
     afterHead = Head->next;
 
-    if(afterHead->width < width){
+    if(afterHead->width < width){ // AfterHead worse width, so switch with new node
         newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
         newElement->next = afterHead;
         Head->next = newElement;
-        // printf("\n\n\n 1\n\n\n");
-
-        // printf("\n PRINTING QUEUE \n");
-        // printPriorityQueue(Head);
-
-
-        while(newElement->next != NULL){
-            aux2 = newElement->next;
-            if(newElement->destNode == aux2->destNode){
-                // printf("\n\nVou apagar o nó\n\n");
-                auxH = newElement->next;
-                auxT = auxH->next;
-                newElement->next = auxT;
-                free(auxH);
-                return Head;
-            } 
-            newElement = newElement->next;
-        }
-
         return Head;
     }
     else{
         auxH = afterHead;
         auxT = afterHead->next;
         if (auxT == NULL){
-            //printf("\n\n\n 2\n\n\n");
             if(auxH->destNode == node) {
-                if(auxH->width > width){
+                if(auxH->width > width){  //AfterHead better width than new node          
                     return Head;
-                }else if (auxH->width == width){
-                    if(auxH->dist <= length){
-                        return Head;
-                    }
-                    /*else  width pior
-                        não vou adicionar na queue pq o valor é pior*/
+                }else if (afterHead->width == width && afterHead->dist <= length){ //AfterHead same width better length than new node
+                    return Head;
+                }else{ // AfterHead is worse than incoming node => replace by new node
+                    Head->next = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+                    free(auxH);
+                    return Head;
                 }
-                /*else   length pior
-                    não vou adicionar na queue pq o valor é pior*/
             }
-            else{
-                //printf("\n\n\n 2.1\n\n\n");
-                newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
-                afterHead->next = newElement;
-                // if(auxH->width > width){
-                //     afterHead->next = newElement;
-                //     return Head;
-                // }else if (auxH->width == width){
-                //     if(auxH->dist <= length){
-                //         afterHead->next = newElement;
-                //         return Head;
-                //     }
-                //     /*else  width pior
-                //         não vou adicionar na queue pq o valor é pior*/
-                // }
-
-            }
-            
-            
+            newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+            afterHead->next = newElement;
         }
         else{
-            //printf("\n\n\n 3\n\n\n");
-            while( (auxT!=NULL) && (auxT->dist < length)){
+            // In this case auxH = afterHead
+            if(auxH->destNode == node) {
+                if(auxH->width > width){ // AuxH better width than new node
+                    return Head;
+                }else if (auxH->width == width && auxH->dist <= length){ // AuxH same width, better length than new node
+                        return Head;
+                }
+                else{ // AuxH is worse than new node => replace by new node
+                    newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+                    Head->next = newElement;
+                    newElement->next = auxH->next;
+                    free(auxH);
+                    return Head;                    
+                }
+            }
+
+
+            while( (auxT!=NULL) && (auxT->width >= width)){
 
                 if(auxT->destNode == node) {
-                    if(auxT->width > width){
+                    if(auxT->width > width){ // AuxT better width than new node
                         return Head;
-                    }else if (auxT->width == width){
-                        if(auxT->dist <= length){
+                    }else if (auxT->width == width && auxT->dist <= length){ // AuxT same width, better length than new node
                             return Head;
-                        }
-                        /*else  width pior
-                            não vou adicionar na queue pq o valor é pior*/
                     }
-                    /*else   length pior
-                        não vou adicionar na queue pq o valor é pior*/
+                    else{ // AuxT is worse than new node => replace by new node
+                        newElement = createElementPriorityQueue(length, width , edge->destNode, neighbour);
+                        auxH->next = newElement;
+                        newElement->next = auxT->next;
+                        free(auxT);
+                        return Head;                    
+                    }
                 }
                 auxH = auxT;
                 auxT = auxT->next;
@@ -408,9 +397,17 @@ void algorithm(Node *nodeHead, char mode){
     }
     else{
         
+        
+        // node = node->nextNode; //1
         // node = node->nextNode; //2
         // node = node->nextNode; //3
         // node = node->nextNode; //4
+        // node = node->nextNode; //5
+        // node = node->nextNode; //6
+        // node = node->nextNode; //7
+        // node = node->nextNode; //8
+        // node = node->nextNode; //9
+        // node = node->nextNode; //9
         // printf("\n\n\n\n NOVO \n\n\n\n\n");
         
         for(node = nodeHead; node != NULL; node = node->nextNode){

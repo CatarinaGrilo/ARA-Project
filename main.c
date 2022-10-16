@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
         graph = createGraph(graph, tail, head, width, length);
     }
     fclose(fp);
-    printGraph(graph);
+    //printGraph(graph);
 
 
 
