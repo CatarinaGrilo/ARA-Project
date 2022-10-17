@@ -221,7 +221,7 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
         }
         return node->nextDest;
     }else{
-        printf("node=%d\n", node->id);
+        //printf("node=%d\n", node->id);
         node_ft = updateEstimate(node_ft, node->nextEdgeOut, eventsHead);
         return node_ft;
     }
@@ -374,8 +374,8 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
     }
     //printf("auxwidht=%d\n",aux_width);
     //printf("deswidht=%d\n",dest->cost_w);
-    printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
-    printf("event: origin=%d, length=%d, width=%d\n", event->origin, event->msg[1], event->msg[2]);
+    //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+    //printf("event: origin=%d, length=%d, width=%d\n", event->origin, event->msg[1], event->msg[2]);
     if(flag_sim=='l'){
         if(dest->cost_l > event->msg[1] + edge->length){
             dest->cost_l = event->msg[1] + edge->length;
@@ -429,7 +429,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                 dest->cost_w = aux_width;
                 return dest;
             }else if(dest->nextHop == event->origin){
-                printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+                //printf("inicio: %d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 dest->cost_l = event->msg[1] + edge->length;
                 dest->stab_time = event->An;
                 aux = searchRouteNeighbour(dest->nextRoute, dest->cost_w, dest->cost_l);
@@ -440,7 +440,7 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
                     dest->nextHop = aux->nextHop;
                     dest->stab_time = event->An;
                 }
-                printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
+                //printf("fim:\t%d\t%d\t%d\t%d\t%d\n", dest->dest, dest->cost_w, dest->cost_l, dest->nextHop, dest->hop->id);
                 return dest;
             }
             return NULL;

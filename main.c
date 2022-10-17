@@ -84,12 +84,12 @@ int main(int argc, char *argv[]){
             head = strtol(argv[4], &nb, 10); ; //dest
 
             auxH = searchGraph(graph, head);
-            simulationsInteractive(auxH, eventsHead);
-            auxT = searchGraph(graph, tail);
-            auxFT = searchDestiny(auxT->nextDest, head);
 
             if(argv[1][2] == 'l'){
                 printf("\nWidest-Shortest:\n\n");
+                simulationsInteractive(auxH, eventsHead);
+                auxT = searchGraph(graph, tail);
+                auxFT = searchDestiny(auxT->nextDest, head);
                 printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
             }
 
@@ -97,6 +97,8 @@ int main(int argc, char *argv[]){
                 printf("\nShortest-Widest:\n");
                 flag_sim = 'w';
                 simulationsInteractive(auxH, eventsHead);
+                auxT = searchGraph(graph, tail);
+                auxFT = searchDestiny(auxT->nextDest, head);
                 printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
             }
         }

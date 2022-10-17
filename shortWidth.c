@@ -8,6 +8,8 @@
 #include "shortWidth.h"
 #include "graph.h"
 
+int flag=0; //this serves the porpuse od truncate the Dijkstra length
+
 //Queue to do dijkstra backwards to find width
 struct queueWidth{
     int width;
@@ -131,7 +133,7 @@ queueLength *createQueueLength(queueLength *head, Edge *neighbour, int dest, int
     newElem->destPointer = neighbour->destNode;
     newElem->dest = dest;
     newElem->next = NULL;
-    //Criou: node=%d, length=%d, width=%d\n", newElem->destPointer->id, newElem->length, neighbour->width);
+    //printf("Criou: node=%d, length=%d, width=%d\n", newElem->destPointer->id, newElem->length, neighbour->width);
     head = insertQueueLength_ordered(head, newElem);
     return head;
 }
@@ -180,6 +182,7 @@ void shortWidth(Node *nodeHead){
         headAnalise = dijkstraBackWidth(queueHeadW, auxT, headAnalise);
         while(headAnalise!=NULL){
             //printf("ANALISE: WIDTH ALLOWED=%d", headAnalise->widthAllowed);
+            flag = 0;
             dijkstraBackLength(queueHeadL, auxT, headAnalise);
             headAnalise = popAnalise(headAnalise);
         }
@@ -188,6 +191,7 @@ void shortWidth(Node *nodeHead){
             headAnalise = dijkstraBackWidth(queueHeadW, auxT, headAnalise);
             while(headAnalise!=NULL){
                 //printf("ANALISE: WIDTH ALLOWED=%d", headAnalise->widthAllowed);
+                flag=0;
                 dijkstraBackLength(queueHeadL, auxT, headAnalise);
                 headAnalise = popAnalise(headAnalise);
             }
@@ -220,7 +224,8 @@ void dijkstraBackLength(queueLength *head, Node *nodeDest, toAnalise *headAnalis
     while(head != NULL){
         if(head->destPointer->visitedLength != head->dest || head->destPointer->visitedLength_aux!=headAnalise->node->id){
             //printf("length=%d, dest=%d, choosen=%d\n", head->length, head->dest ,head->destPointer->id);
-            head = analiseQueueLength(head, headAnalise);
+            if(flag!=1)
+                head = analiseQueueLength(head, headAnalise);
         }
         head = popQueueLength(head);    
     }
@@ -297,7 +302,7 @@ queueLength *analiseQueueLength(queueLength *head, toAnalise *headAnalise){
     node = head->destPointer;
     length = updateFT_SW_Length(node, head, headAnalise);
     //printf("analise length=%d\n",length);
-    if (length!=-1 && node->nextEdgeIn!=NULL){
+    if (length!=-1 && node->nextEdgeIn!=NULL && flag!=1){
         inNeighbour = node->nextEdgeIn;
         if(inNeighbour->dest != head->dest && headAnalise->widthAllowed <=inNeighbour->width){
             head = createQueueLength(head, inNeighbour, head->dest, length);
@@ -341,6 +346,7 @@ int updateFT_SW_Length(Node *node, queueLength *head, toAnalise *headAnalise){
         node_ft = searchDestiny(node->nextDest, head->dest);
         if(node_ft->cost_l > head->length){
             node_ft->cost_l = head->length;
+            flag=1;
             //printf("TABELA:node=%d length=%d\n", node->id, node_ft->cost_l);
             return node_ft->cost_l;
         }
