@@ -44,6 +44,8 @@ void printFT(Graph *Head);
 
 void printGraph(Graph *Head);
 
+void printPath(Node *node, int dest_id);
+
 void freeGraph(Node *listHead);
 
 #endif

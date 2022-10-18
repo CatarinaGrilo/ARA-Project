@@ -498,6 +498,36 @@ void printGraph(Graph *Head){
     }
 }
 
+void printPath(Node *node, int dest_id){
+
+    ForwardTable *auxT;
+
+    if(node == NULL){
+        return NULL;
+    }else if(node->id == dest_id){
+        printf("%d\n", node->id);
+        return;
+    }else{     
+        auxT = node->nextDest;
+        if(auxT->dest == dest_id){
+            if(auxT->hop->id != dest_id)
+                printf("%d->", auxT->nextHop);
+            printPath(auxT->hop, dest_id);
+            return;
+        }
+        while(auxT->nextDest != NULL){
+            auxT = auxT->nextDest;
+            if(auxT->dest == dest_id){
+                if(auxT->hop->id != dest_id)
+                    printf("%d->", auxT->nextHop);
+                printPath(auxT->hop, dest_id);
+                return;
+            }
+        }
+    }
+    return NULL;
+}
+
 void freeGraph(Node *listHead){
 
     Node *auxN;

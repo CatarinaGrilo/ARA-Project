@@ -90,7 +90,8 @@ int main(int argc, char *argv[]){
                 simulationsInteractive(auxH, eventsHead);
                 auxT = searchGraph(graph, tail);
                 auxFT = searchDestiny(auxT->nextDest, head);
-                printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+                printf("From node %d to node %d: width=%d and length=%d\nPath:%d->", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
+                printPath(auxT, head);
             }
 
             else if (argv[1][2] == 'w'){
@@ -99,7 +100,8 @@ int main(int argc, char *argv[]){
                 simulationsInteractive(auxH, eventsHead);
                 auxT = searchGraph(graph, tail);
                 auxFT = searchDestiny(auxT->nextDest, head);
-                printf("From node %d to node %d -> width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+                printf("From node %d to node %d: width=%d and length=%d\nPath:%d->", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
+                printPath(auxT, head);
             }
         }
     }  
