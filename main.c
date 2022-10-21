@@ -17,7 +17,7 @@ char flag_sim = 'l'; //flag to type of simulation, l->widests-shortest, w->short
 
 int main(int argc, char *argv[]){
 
-    int tail, head, width, length;
+    int tail, head, width, length, nodes;
     char *fpIn, *nb;
     FILE *fp;
     Graph *graph=NULL;
@@ -43,6 +43,8 @@ int main(int argc, char *argv[]){
         printf("It was not possible to allocate memory\n");
 	    exit(1);
     }
+    if(fscanf(fp, "%d\n", &nodes) == EOF )
+        return 1;
     while(fscanf(fp, "%d%*c%d%*c%d%*c%d\n", &tail, &head, &width, &length) != EOF ){
 
         //printf("%d %d %d %d:\n", tail, head, width, length);
@@ -126,5 +128,7 @@ int main(int argc, char *argv[]){
 
     freeGraph(graph->nextNode);
     free(graph);
+
+    return 0;
 
 }
