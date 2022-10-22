@@ -10,6 +10,7 @@
 
 extern char flag_sim;
 
+/* Create a new graph */
 Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){ 
 
     Node *newNodeT = NULL;
@@ -38,6 +39,7 @@ Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){
     return listHead;
 }
 
+/* check if a node already exits in graph */
 Node *searchGraph(Graph *listHead, int id){
 
     Node *auxT = listHead->nextNode;
@@ -58,6 +60,7 @@ Node *searchGraph(Graph *listHead, int id){
     return NULL;
 }
 
+/* Create a new node */
 Node *createNode(int tail){
 
     Node *newNode = NULL;
@@ -76,7 +79,8 @@ Node *createNode(int tail){
     return newNode;
 }
 
-Node *insertNode(Node *listHead, Node *newNode){ //Insert the new Node in the end of the Nodes List
+/* Insert new Node in the end of the Nodes List */
+Node *insertNode(Node *listHead, Node *newNode){
 
     Node *auxH, *auxT;
 
@@ -94,6 +98,7 @@ Node *insertNode(Node *listHead, Node *newNode){ //Insert the new Node in the en
     return listHead;
 }
 
+/* Create a new edge*/
 Edge *createEdge(int head, int width, int length, Node *dest){ 
 
     Edge *newEdge;
@@ -113,6 +118,7 @@ Edge *createEdge(int head, int width, int length, Node *dest){
     return newEdge;
 }
 
+/* Insert new edge in the end of the egde list of a node */
 Edge *insertEdge(Edge *listHead, Edge *newEdge){ 
 
     Edge *auxH, *auxT;
@@ -131,6 +137,7 @@ Edge *insertEdge(Edge *listHead, Edge *newEdge){
     return listHead;
 }
 
+/* Search for a edge in edge list */
 Edge *searchEdge(Edge *listHead, int id){
 
     Edge *auxT;
@@ -150,6 +157,7 @@ Edge *searchEdge(Edge *listHead, int id){
     return NULL;
 }
 
+/* Updates ForwardTable list */
 ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
 
     ForwardTable *node_ft = NULL;   
@@ -174,6 +182,7 @@ ForwardTable *updateForwardTable(Node *node, Event *eventsHead){
     return NULL;
 }
 
+/* Search for a destiny in ForwardTable list*/
 ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
 
     ForwardTable *auxT;
@@ -193,6 +202,7 @@ ForwardTable *searchDestiny(ForwardTable *ftHead, int dest_id){
     return NULL;
 }
 
+/* Search for a destiny reached by a specific neighbor in RoutingTable list*/
 RoutingTable *searchRoute(RoutingTable *rtHead, int dest_id, int nextHop){
 
     RoutingTable *auxT, *aux=NULL;
@@ -212,6 +222,7 @@ RoutingTable *searchRoute(RoutingTable *rtHead, int dest_id, int nextHop){
     return aux;
 }
 
+/* Creates a new destiny in ForwardTable list*/
 ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event){
 
     int aux_width=0;
@@ -249,6 +260,7 @@ ForwardTable *createDestiny(ForwardTable *ftHead, Edge *edgesHead, Event *event)
     return ftHead;
 }
 
+/* Creates a new destiny reached by a specific neighbor in RoutingTable list*/
 RoutingTable *createRT(RoutingTable *rtHead, Edge *edge, Event *event){
 
     int aux_width=0;
@@ -280,6 +292,7 @@ RoutingTable *createRT(RoutingTable *rtHead, Edge *edge, Event *event){
     return rtHead;
 }
 
+/* Searches for a better way to reach a destiny*/
 RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l){
 
     RoutingTable *auxT, *aux=NULL;
@@ -299,6 +312,7 @@ RoutingTable *searchRouteNeighbour(RoutingTable *rtHead, int cost_w, int cost_l)
     return aux;
 }
 
+/* Updates estimate to reach a destiny if condition to do so are verified*/
 ForwardTable *updateEstimate(ForwardTable *dest, Edge *edgeHead , Event *event){
 
     int aux_width=0;
@@ -405,20 +419,6 @@ void printFT(Graph *Head){
         printf("Dest\tWidth\tLength\tNextHop\ttime\n");
         for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
             printf("%d\t%d\t%d\t%d\t%f\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop, auxFT->stab_time);
-        }
-    }
-}
-
-void printFT_Algorithm(Graph *Head){
-
-    Node *auxN; 
-    ForwardTable *auxFT;
-
-    for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
-        printf("\nForwarding Table Node %d:\n", auxN->id);
-        printf("Dest\tWidth\tLength\tNextHop\n");
-        for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
-            printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop);
         }
     }
 }

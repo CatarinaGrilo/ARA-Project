@@ -13,7 +13,7 @@
 extern float time_simul;
 
 /**********************************     Simulation      ***********************
- * Wake up each node separately, and fill the forwarding tables of the nodes  
+ * Wake up each node separately, and fills the forwarding tables of the nodes  
  * that manage to reach the node that woke up. And do the same for the 
  * remaining nodes in the node list.
  *****************************************************************************/
@@ -35,6 +35,7 @@ void simulations(Node *nodeHead, Event *eventHead){
     return;
 }
 
+/* Interactive mode: wakes up destination and fills the forwading table */
 void simulationsInteractive(Node *destNode, Event *eventHead){
     
     Node *auxT = NULL; 
@@ -49,6 +50,9 @@ void simulationsInteractive(Node *destNode, Event *eventHead){
     return;
 } 
 
+
+/* gets the time, width, length of every node to reach 
+    every destination to a file */
 void stats(Graph *Head){
 
     Node *auxN;

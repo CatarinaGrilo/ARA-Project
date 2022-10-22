@@ -8,10 +8,9 @@
 #include "shortWidth.h"
 #include "graph.h"
 
-int flag=0; //this serves the porpuse od truncate the Dijkstra length
+int flag=0; //this serves the porpuse of truncating the Dijkstra length
 
-//Queue to do dijkstra backwards to find width
-
+/* Create a new element of QueueWidth */
 queueWidth *createQueueWidth(queueWidth *head, Edge *neighbour, int dest ,int width){
 
     int aux_width;
@@ -37,6 +36,7 @@ queueWidth *createQueueWidth(queueWidth *head, Edge *neighbour, int dest ,int wi
     return head;
 }
 
+/* Inserts a element of QueueWidth in the list in descending order */
 queueWidth *insertQueueWidth_ordered(queueWidth *head, queueWidth *newElem){
 
     queueWidth *auxH, *auxT;
@@ -67,6 +67,7 @@ queueWidth *insertQueueWidth_ordered(queueWidth *head, queueWidth *newElem){
     return head;
 }
 
+/* Create a new element of toAnalise */
 toAnalise *createtoAnalise(toAnalise *head, Node *node, int width){
 
     toAnalise *newElem = NULL;
@@ -83,6 +84,7 @@ toAnalise *createtoAnalise(toAnalise *head, Node *node, int width){
     return head;
 }
 
+/* Inserts a element of toAnalise in list */
 toAnalise *insertAnalise(toAnalise *head, toAnalise *newElem){
 
     toAnalise *auxH, *auxT;
@@ -101,6 +103,7 @@ toAnalise *insertAnalise(toAnalise *head, toAnalise *newElem){
     return head;
 }
 
+/* Create a new element of QueueLength */
 queueLength *createQueueLength(queueLength *head, Edge *neighbour, int dest, int length){
 
     queueLength *newElem = NULL;
@@ -118,6 +121,7 @@ queueLength *createQueueLength(queueLength *head, Edge *neighbour, int dest, int
     return head;
 }
 
+/* Inserts a element of QueueLength in the list in ascending order */
 queueLength *insertQueueLength_ordered(queueLength *head, queueLength *newElem){
 
     queueLength *auxH, *auxT;
@@ -148,6 +152,7 @@ queueLength *insertQueueLength_ordered(queueLength *head, queueLength *newElem){
     return head;
 }
 
+/* "Algorithm" that computes the shortest-widest for all nodes */
 void shortWidth(Node *nodeHead){
     
     Node *auxT = NULL; 
@@ -180,6 +185,7 @@ void shortWidth(Node *nodeHead){
     return;
 }
 
+/* Backwards Dijkstra's algorithm just to find the widths */
 toAnalise *dijkstraBackWidth(queueWidth *head, Node *nodeDest, toAnalise *headAnalise){
 
 
@@ -196,6 +202,7 @@ toAnalise *dijkstraBackWidth(queueWidth *head, Node *nodeDest, toAnalise *headAn
     return headAnalise;
 }
 
+/* Backwards Dijkstra's algorithm just to find the lengths, after finding the width */
 void dijkstraBackLength(queueLength *head, Node *nodeDest, toAnalise *headAnalise){
 
     
@@ -212,6 +219,7 @@ void dijkstraBackLength(queueLength *head, Node *nodeDest, toAnalise *headAnalis
     return;
 }
 
+/* See edges od in-neighbors of destiny and put on queueWidth list */
 queueWidth *nodeDestiny(queueWidth *head, Node *nodeDest){
 
     Edge *inNeighbour;
@@ -229,6 +237,7 @@ queueWidth *nodeDestiny(queueWidth *head, Node *nodeDest){
     return head;
 }
 
+/* See edges od in-neighbors of destiny and put on queueLength list */
 queueLength *nodeDestinyLenght(queueLength *head, Node *nodeDest, toAnalise *headAnalise){
 
     Edge *inNeighbour;
@@ -249,6 +258,7 @@ queueLength *nodeDestinyLenght(queueLength *head, Node *nodeDest, toAnalise *hea
     return head;
 }
 
+/* Analise first element of list, because its the one with better estimate */
 queueWidth *analiseQueue(queueWidth *head){
    
     Node *node = NULL;
@@ -273,6 +283,7 @@ queueWidth *analiseQueue(queueWidth *head){
     return head;
 }
 
+/* Analise first element of list, because its the one with better estimate */
 queueLength *analiseQueueLength(queueLength *head, toAnalise *headAnalise){
    
     Node *node = NULL;
@@ -299,6 +310,7 @@ queueLength *analiseQueueLength(queueLength *head, toAnalise *headAnalise){
     return head;
 }
 
+/* Update the estimate of width */
 ForwardTable *updateFT_SW(Node *node, queueWidth *head){
 
     ForwardTable *node_ft = NULL;
@@ -318,6 +330,7 @@ ForwardTable *updateFT_SW(Node *node, queueWidth *head){
 
 }
 
+/* Update the estimate of length */
 int updateFT_SW_Length(Node *node, queueLength *head, toAnalise *headAnalise){
 
     ForwardTable *node_ft = NULL;
@@ -342,6 +355,7 @@ int updateFT_SW_Length(Node *node, queueLength *head, toAnalise *headAnalise){
 
 }
 
+/* Create a new destiny in the ForwardTable list */
 ForwardTable *newDestiny(ForwardTable *ftHead, queueWidth *head){
 
     ForwardTable *newDest = NULL;

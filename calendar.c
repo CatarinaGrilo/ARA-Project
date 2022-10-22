@@ -12,16 +12,12 @@
 
 extern float time_simul;
 
-// struct Event{
-//     float An;
-//     int dest;
-//     int origin;
-//     int msg[3]; //[0]-destino, [1]-lenght, [2]-width
-//     Node *destPointer;
-//     Node *originPointer;
-//     Event *nextEvent;
-// };
+/**********************************     Calender      ***********************
+ * Calender is a list of ordered events, here we manage that list by creating 
+ * new events, processing them and delete them. 
+ *****************************************************************************/
 
+/* Creates a new event for the Event list */
 Event *createEvent(Event *eventsHead, Node *wakeupNode, Edge *neighbour, int dest, int cost_l, int cost_w){ 
 
     float Sn;
@@ -55,6 +51,7 @@ Event *createEvent(Event *eventsHead, Node *wakeupNode, Edge *neighbour, int des
     return eventsHead;
 }
 
+/* Inserts a event in the Event list in ascending order */
 Event *insertEvent_ordered(Event *Listhead, Event *newEvent){
 
     Event *auxH, *auxT;
@@ -85,6 +82,7 @@ Event *insertEvent_ordered(Event *Listhead, Event *newEvent){
     return Listhead;
 }
 
+/* Begins the calender and processes the events while Event list in not empty */
 void calendarEvolution(Event *eventsHead, Node *wakeupNode){
     
     eventsHead = announceNode(eventsHead, wakeupNode); //First wake up the node, create the respective events and insert them in the calendar
@@ -98,6 +96,7 @@ void calendarEvolution(Event *eventsHead, Node *wakeupNode){
     return;
 }
 
+/* Announces a node as destination by creating new events*/
 Event *announceNode(Event *eventsHead, Node *wakeupNode){
 
     Edge *inNeighbour;
@@ -115,6 +114,7 @@ Event *announceNode(Event *eventsHead, Node *wakeupNode){
     return eventsHead;
 }
 
+/* Processes a Event element */
 Event *doEvent(Event *eventsHead, Node *nodeDest){
    
     Node *node = NULL;
@@ -129,6 +129,7 @@ Event *doEvent(Event *eventsHead, Node *nodeDest){
     return eventsHead;
 }
 
+/* Send to the in-neighbors the new information by creating new events */
 Event *sendToNeighbour(Event *eventsHead, Node *origin, ForwardTable *node_Ftable){
 
     Edge *inNeighbour;
@@ -151,6 +152,7 @@ Event *sendToNeighbour(Event *eventsHead, Node *origin, ForwardTable *node_Ftabl
     return eventsHead;
 }
 
+/* Deletes Event element from the Event list */
 Event *popEvent(Event *eventsHead){
 
     Event *auxH = NULL;
@@ -161,7 +163,3 @@ Event *popEvent(Event *eventsHead){
 
     return eventsHead;
 }
-
-
-
-

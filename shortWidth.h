@@ -14,48 +14,27 @@ typedef struct queueWidth queueWidth;
 typedef struct queueLength queueLength;
 typedef struct toAnalise toAnalise;
 
+/* Queue (list) to do dijkstra backwards to find width */
 struct queueWidth{
     int width;
     int dest;
     Node *destPointer;
     queueWidth *next;
 };
-
+/* List of nodes that can reach a destination when was run dijkstra backwards to find width */
 struct toAnalise{
     int widthAllowed;
     Node *node;
     toAnalise *next;
 };
 
-//Queue to do dijkstra forward to find length, after finding the width
+/* Queue (list) to do dijkstra forward to find length, after finding the width */
 struct queueLength{
     int length;
     int dest;
     Node *destPointer;
     queueLength *next;
 };
-
-
-// typedef struct _queueWidth{
-//     int width;
-//     int dest;
-//     Node *destPointer;
-//     queueWidth *next;
-// } queueWidth;
-
-// typedef struct _toAnalise{
-//     int widthAllowed;
-//     struct _Node *node;
-//     struct _toAnalise *next;
-// }toAnalise;
-
-// typedef struct _queueLength{
-//     int length;
-//     int width;
-//     int dest;
-//     struct _Node *destPointer;
-//     struct _queueLength *next;
-// } queueLength;
 
 queueWidth *createQueueWidth(queueWidth *head, Edge *neighbour, int dest ,int width);
 

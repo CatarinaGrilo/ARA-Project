@@ -64,9 +64,13 @@ int main(int argc, char *argv[]){
         printf("To run the program, use the following arguments:\n");
         printf("\n ./[Executable] [File.txt] -[simulation/algorithm][mode]\n");
         printf("\n Simulation mode (widest-shortest): ./graphs example.txt -sl");
+        printf("\n Simulation mode (shortest-widest): ./graphs example.txt -sw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -sil [Source] [Destiny] ");
+        printf("\n Interactive Simulation mode (shortest-widest): ./graphs example.txt -siw [Source] [Destiny] ");
+        printf("\n Algorithm mode (widest-shortest):  ./graphs example.txt -al");
         printf("\n Algorithm mode (shortest-widest):  ./graphs example.txt -aw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -ail [Source] [Destiny] ");
+        printf("\n Interactive Simulation mode (shortest-widest): ./graphs example.txt -aiw [Source] [Destiny] ");
         printf("\n Optimal Algorithm mode for shortest-widest:  ./graphs example.txt -ao\n\n");
         exit(0);
     }
@@ -138,13 +142,13 @@ int main(int argc, char *argv[]){
         if (argv[2][2] == 'l'){  
             printf("\nWidest-Shortest:\n\n");
             algorithm(graph->nextNode, 'l');
-            printFT_Algorithm(graph);
+            printFT_SW(graph);
             stats(graph);
         }
         //Shortest Widest
         else if (argv[2][2] == 'w'){
             algorithm(graph->nextNode, 'w');
-            printFT_Algorithm(graph);
+            printFT_SW(graph);
             stats(graph);
         }
         //Shortest Widest optimal
@@ -191,10 +195,15 @@ int main(int argc, char *argv[]){
         printf("To run the program, use the following arguments:\n");
         printf("\n ./[Executable] [File.txt] -[simulation/algorithm][mode]\n");
         printf("\n Simulation mode (widest-shortest): ./graphs example.txt -sl");
+        printf("\n Simulation mode (shortest-widest): ./graphs example.txt -sw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -sil [Source] [Destiny] ");
+        printf("\n Interactive Simulation mode (shortest-widest): ./graphs example.txt -siw [Source] [Destiny] ");
+        printf("\n Algorithm mode (widest-shortest):  ./graphs example.txt -al");
         printf("\n Algorithm mode (shortest-widest):  ./graphs example.txt -aw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -ail [Source] [Destiny] ");
+        printf("\n Interactive Simulation mode (shortest-widest): ./graphs example.txt -aiw [Source] [Destiny] ");
         printf("\n Optimal Algorithm mode for shortest-widest:  ./graphs example.txt -ao\n\n");
+        exit(0);
     }
         
 
