@@ -464,6 +464,20 @@ void printFT(Graph *Head){
     }
 }
 
+void printFT_Algorithm(Graph *Head){
+
+    Node *auxN; 
+    ForwardTable *auxFT;
+
+    for(auxN=Head->nextNode; auxN!=NULL; auxN=auxN->nextNode){
+        printf("\nForwarding Table Node %d:\n", auxN->id);
+        printf("Dest\tWidth\tLength\tNextHop\n");
+        for(auxFT=auxN->nextDest; auxFT!=NULL; auxFT=auxFT->nextDest){
+            printf("%d\t%d\t%d\t%d\n", auxFT->dest, auxFT->cost_w, auxFT->cost_l, auxFT->nextHop);
+        }
+    }
+}
+
 void printFT_SW(Graph *Head){
 
     Node *auxN; 

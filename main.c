@@ -110,13 +110,13 @@ int main(int argc, char *argv[]){
          if (argv[1][2] == 'l'){  
             printf("\nWidest-Shortest:\n\n");
             algorithm(graph->nextNode, 'l');
-            printFT(graph);
+            printFT_Algorithm(graph);
             stats(graph);
         }
         else if (argv[1][2] == 'w'){
             //Shortest Widest
             algorithm(graph->nextNode, 'w');
-            printFT(graph);
+            printFT_Algorithm(graph);
             stats(graph);
         }
         else if (argv[1][2] == 'o'){

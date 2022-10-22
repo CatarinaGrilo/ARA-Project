@@ -29,9 +29,7 @@ PriorityQueue* updatePriorityQueue_l(PriorityQueue *Head, Edge *edge, Node *neig
 PriorityQueue* updatePriorityQueue_w(PriorityQueue *Head, Edge *edge, Node *neighbour, Node *destiny);
 void printPriorityQueue(PriorityQueue* QueueHead);
 void freePriorityQueue(PriorityQueue* QueueHead);  
-void createDestinysFT(Node* nodeHead);
 void resetNodeVisited(Node *Head);
-void printForwardTable(Node *Head);
 void updateForwardTable_a(Node *node, PriorityQueue *element, Node *nextHop, Node *destiny);
 void algorithm(Node *nodeHead, char mode);
 void algorithmInteractive(Node *nodeHead, char mode);
