@@ -10,61 +10,6 @@
 
 extern char flag_sim;
 
-// // Data structure to store the graph, list of all nodes that exist in the network
-// // struct Graph
-// // {
-// //     struct Node* nextNode;
-    
-// // };
-// // // Data structure to store Edgeacency list nodes of the graph
-// // struct Node
-// // {
-// //     int id;
-// //     int visited;
-// //     int visitedLength;
-// //     int visitedLength_aux;
-// //     struct Node* nextNode;
-// //     struct Edge* nextEdgeOut;
-// //     struct Edge* nextEdgeIn;
-// //     struct ForwardTable* nextDest;
-// // };
-
-// // // Data structure to store a graph edge
-// // struct Edge
-// // {
-// //     int dest;
-// //     int width, length;
-// //     float An;
-// //     struct Edge* nextEdge;
-// //     struct Node* destNode;
-// // };
-
-// // // Data structure to store a graph edge
-// // struct ForwardTable
-// // {
-// //     int dest;
-// //     int cost_l;
-// //     int length_aux;
-// //     int cost_w;
-// //     int nextHop;
-// //     float stab_time;
-// //     struct Node *hop;
-// //     struct ForwardTable* nextDest;
-// //     RoutingTable* nextRoute; //ter as varias opções de chegar ao mm caminho 
-// // };
-
-// // struct RoutingTable//Info dos vizinhos para o mm destino
-// // {
-// //     int dest;
-// //     int cost_l;
-// //     int cost_w;
-// //     int nextHop;
-// //     struct Node *hop;
-// //     struct RoutingTable* nextDest;
-// // };
-
-
-
 Graph *createGraph(Graph *listHead, int tail, int head, int width, int length){ 
 
     Node *newNodeT = NULL;
@@ -526,7 +471,7 @@ void printPath(Node *node, int dest_id){
         auxT = node->nextDest;
         if(auxT->dest == dest_id){
             if(auxT->hop->id != dest_id)
-                printf("%d->", auxT->nextHop);
+                printf("%d -> ", auxT->nextHop);
             printPath(auxT->hop, dest_id);
             return;
         }
@@ -534,7 +479,7 @@ void printPath(Node *node, int dest_id){
             auxT = auxT->nextDest;
             if(auxT->dest == dest_id){
                 if(auxT->hop->id != dest_id)
-                    printf("%d->", auxT->nextHop);
+                    printf("%d -> ", auxT->nextHop);
                 printPath(auxT->hop, dest_id);
                 return;
             }
