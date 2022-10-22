@@ -106,22 +106,60 @@ int main(int argc, char *argv[]){
         }
     }  
 
-    if( strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'l'){
-        //Widest Shortest
-        algorithm(graph->nextNode, 'l');
-        stats(graph);
+    if( strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a'){
+         if (argv[1][2] == 'l'){  
+            printf("\nWidest-Shortest:\n\n");
+            algorithm(graph->nextNode, 'l');
+            printFT(graph);
+            stats(graph);
+        }
+        else if (argv[1][2] == 'w'){
+            //Shortest Widest
+            algorithm(graph->nextNode, 'w');
+            printFT(graph);
+            stats(graph);
+        }
+        else if (argv[1][2] == 'o'){
+            //Shortest Widest optimal
+            shortWidth(graph->nextNode);
+            printFT_SW(graph);
+            stats(graph);
+        }
     }
-    else if(strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'w'){
-        //Shortest Widest
-        algorithm(graph->nextNode, 'w');
-        stats(graph);
-    }else if(strlen(argv[1]) == 3  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'o'){
-        //Shortest Widest optimal
-        shortWidth(graph->nextNode);
-        printFT_SW(graph);
-        stats(graph);
-    }
+
+    if( strlen(argv[1]) == 4  && argv[1][0] == '-' && argv[1][1] == 'a' && argv[1][2] == 'i'){
     
+        if( argc != 5){
+            printf("Error: Arguments are not valid\n");
+            exit(0);
+        }
+        
+        /* Interactive simulation mode */
+        tail = strtol(argv[3], &nb, 10); //souce
+        head = strtol(argv[4], &nb, 10); ; //dest
+
+        auxH = searchGraph(graph, head);
+
+        if(argv[1][3] == 'l'){
+            printf("\nWidest-Shortest:\n\n");
+            algorithmInteractive(auxH, 'l');
+            auxT = searchGraph(graph, tail);
+            auxFT = searchDestiny(auxT->nextDest, head);
+            printf("From node %d to node %d: width=%d and length=%d\nPath:%d->", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
+            printPath(auxT, head);
+        }
+
+        else if (argv[1][3] == 'w'){
+            printf("\nShortest-Widest:\n");
+            algorithmInteractive(auxH, 'w');
+            auxT = searchGraph(graph, tail);
+            auxFT = searchDestiny(auxT->nextDest, head);
+            printf("From node %d to node %d: width=%d and length=%d\nPath:%d->", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
+            printPath(auxT, head);
+        }
+    }
+        
+        
 
 
     freeGraph(graph->nextNode);

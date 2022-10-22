@@ -506,6 +506,7 @@ void printPath(Node *node, int dest_id){
         return NULL;
     }else if(node->id == dest_id){
         printf("%d\n", node->id);
+        printf("\n\n");
         return;
     }else{     
         auxT = node->nextDest;
@@ -525,7 +526,9 @@ void printPath(Node *node, int dest_id){
             }
         }
     }
-    return NULL;
+
+
+    return;
 }
 
 void freeGraph(Node *listHead){
