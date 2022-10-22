@@ -12,15 +12,15 @@
 
 extern float time_simul;
 
-struct Event{
-    float An;
-    int dest;
-    int origin;
-    int msg[3]; //[0]-destino, [1]-lenght, [2]-width
-    Node *destPointer;
-    Node *originPointer;
-    Event *nextEvent;
-};
+// struct Event{
+//     float An;
+//     int dest;
+//     int origin;
+//     int msg[3]; //[0]-destino, [1]-lenght, [2]-width
+//     Node *destPointer;
+//     Node *originPointer;
+//     Event *nextEvent;
+// };
 
 Event *createEvent(Event *eventsHead, Node *wakeupNode, Edge *neighbour, int dest, int cost_l, int cost_w){ 
 

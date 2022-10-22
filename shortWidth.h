@@ -10,26 +10,52 @@
 
 #include "main.h"
 
-typedef struct _queueWidth{
+typedef struct queueWidth queueWidth;
+typedef struct queueLength queueLength;
+typedef struct toAnalise toAnalise;
+
+struct queueWidth{
     int width;
     int dest;
-    struct _Node *destPointer;
-    struct _queueWidth *next;
-} queueWidth;
+    Node *destPointer;
+    queueWidth *next;
+};
 
-typedef struct _toAnalise{
+struct toAnalise{
     int widthAllowed;
-    struct _Node *node;
-    struct _toAnalise *next;
-}toAnalise;
+    Node *node;
+    toAnalise *next;
+};
 
-typedef struct _queueLength{
+//Queue to do dijkstra forward to find length, after finding the width
+struct queueLength{
     int length;
-    int width;
     int dest;
-    struct _Node *destPointer;
-    struct _queueLength *next;
-} queueLength;
+    Node *destPointer;
+    queueLength *next;
+};
+
+
+// typedef struct _queueWidth{
+//     int width;
+//     int dest;
+//     Node *destPointer;
+//     queueWidth *next;
+// } queueWidth;
+
+// typedef struct _toAnalise{
+//     int widthAllowed;
+//     struct _Node *node;
+//     struct _toAnalise *next;
+// }toAnalise;
+
+// typedef struct _queueLength{
+//     int length;
+//     int width;
+//     int dest;
+//     struct _Node *destPointer;
+//     struct _queueLength *next;
+// } queueLength;
 
 queueWidth *createQueueWidth(queueWidth *head, Edge *neighbour, int dest ,int width);
 

@@ -40,6 +40,8 @@ ForwardTable *updateEstimate(ForwardTable *dest, Edge *edge , Event *event);
 
 void printFT_SW(Graph *Head);
 
+void printFT_Algorithm(Graph *Head);
+
 void printFT(Graph *Head);
 
 void printGraph(Graph *Head);

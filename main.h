@@ -15,70 +15,132 @@
 
 #define N 4096
 
-typedef struct _DistTable{
-    int id;
-    int cost_l;
-    int cost_w;
-    struct Node *NextHop;
-    struct DistTable* next;
-}  DistTable;
 
-typedef struct _Graph{
-    struct _Nodes *nextNode;
-} Graph;
+typedef struct Graph Graph;
+typedef struct Node Node;
+typedef struct Edge Edge;
+typedef struct ForwardTable ForwardTable;
+typedef struct RoutingTable RoutingTable;
+typedef struct Event Event;
 
-typedef struct _Node{
+struct Graph{
+    Node *nextNode;
+};
+
+struct Node{
     int id;
     int visited;
     int visitedLength;
     int visitedLength_aux;
-    struct _Node *nextNode;
-    struct _Edge *nextEdgeOut;
-    struct _Edge *nextEdgeIn;
-    struct _ForwardTable *nextDest;
+    Node *nextNode;
+    Edge *nextEdgeOut;
+    Edge *nextEdgeIn;
+    ForwardTable *nextDest;
 
-} Node;
+};
 
-typedef struct _Edge{
+struct Edge{
     int dest;
     int width;
     int length;
     float An;
-    struct _Edge *nextEdge;
-    struct _Node *destNode;
-} Edge;
+    Edge *nextEdge;
+    Node *destNode;
+};
 
-typedef struct _ForwardTable{
+struct ForwardTable{
     int dest;
     int cost_l;
     int length_aux;
     int cost_w;
     int nextHop;
     float stab_time;
-    struct _Node *hop;
-    struct _ForwardTable* nextDest;
-    struct _RoutingTable* nextRoute;
-} ForwardTable;
+    Node *hop;
+    ForwardTable* nextDest;
+    RoutingTable* nextRoute;
+} ;
 
-typedef struct _RoutingTable//Info dos vizinhos para o mm destino
-{
+//Info dos vizinhos para o mm destino
+struct RoutingTable{
     int dest;
     int cost_l;
     int cost_w;
     int nextHop;
-    struct _Node *hop;
-    struct _RoutingTable* nextDest;
-} RoutingTable;
+    Node *hop;
+    RoutingTable* nextDest;
+};
 
-typedef struct _Event{
+struct Event{
     float An;
     int dest;
     int origin;
     int msg[3];
-    struct _Node *destPointer;
-    struct _Node *originPointer;
-    struct _Event *nextEvent;
-} Event;
+    Node *destPointer;
+    Node *originPointer;
+    Event *nextEvent;
+};
+
+
+
+
+/**********************************************************************************************/
+
+// typedef struct _Graph{
+//     struct _Nodes *nextNode;
+// } Graph;
+
+// typedef struct _Node{
+//     int id;
+//     int visited;
+//     int visitedLength;
+//     int visitedLength_aux;
+//     struct _Node *nextNode;
+//     struct _Edge *nextEdgeOut;
+//     struct _Edge *nextEdgeIn;
+//     struct _ForwardTable *nextDest;
+
+// } Node;
+
+// typedef struct _Edge{
+//     int dest;
+//     int width;
+//     int length;
+//     float An;
+//     struct _Edge *nextEdge;
+//     struct _Node *destNode;
+// } Edge;
+
+// typedef struct _ForwardTable{
+//     int dest;
+//     int cost_l;
+//     int length_aux;
+//     int cost_w;
+//     int nextHop;
+//     float stab_time;
+//     struct _Node *hop;
+//     struct _ForwardTable* nextDest;
+//     struct _RoutingTable* nextRoute;
+// } ForwardTable;
+
+// typedef struct _RoutingTable//Info dos vizinhos para o mm destino
+// {
+//     int dest;
+//     int cost_l;
+//     int cost_w;
+//     int nextHop;
+//     struct _Node *hop;
+//     struct _RoutingTable* nextDest;
+// } RoutingTable;
+
+// typedef struct _Event{
+//     float An;
+//     int dest;
+//     int origin;
+//     int msg[3];
+//     struct _Node *destPointer;
+//     struct _Node *originPointer;
+//     struct _Event *nextEvent;
+// } Event;
 
 
 

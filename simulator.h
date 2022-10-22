@@ -12,7 +12,7 @@
 
 void simulations(Node *nodeHead, Event *eventHead);
 
-void simulationsIteractive(Node *destNode, Event *eventHead);
+void simulationsInteractive(Node *destNode, Event *eventHead);
 
 void stats(Graph *Head);
 

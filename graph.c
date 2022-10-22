@@ -10,58 +10,58 @@
 
 extern char flag_sim;
 
-// Data structure to store the graph, list of all nodes that exist in the network
-struct Graph
-{
-    struct Node* nextNode;
+// // Data structure to store the graph, list of all nodes that exist in the network
+// // struct Graph
+// // {
+// //     struct Node* nextNode;
     
-};
-// Data structure to store Edgeacency list nodes of the graph
-struct Node
-{
-    int id;
-    int visited;
-    int visitedLength;
-    int visitedLength_aux;
-    struct Node* nextNode;
-    struct Edge* nextEdgeOut;
-    struct Edge* nextEdgeIn;
-    struct ForwardTable* nextDest;
-};
+// // };
+// // // Data structure to store Edgeacency list nodes of the graph
+// // struct Node
+// // {
+// //     int id;
+// //     int visited;
+// //     int visitedLength;
+// //     int visitedLength_aux;
+// //     struct Node* nextNode;
+// //     struct Edge* nextEdgeOut;
+// //     struct Edge* nextEdgeIn;
+// //     struct ForwardTable* nextDest;
+// // };
 
-// Data structure to store a graph edge
-struct Edge
-{
-    int dest;
-    int width, length;
-    float An;
-    struct Edge* nextEdge;
-    struct Node* destNode;
-};
+// // // Data structure to store a graph edge
+// // struct Edge
+// // {
+// //     int dest;
+// //     int width, length;
+// //     float An;
+// //     struct Edge* nextEdge;
+// //     struct Node* destNode;
+// // };
 
-// Data structure to store a graph edge
-struct ForwardTable
-{
-    int dest;
-    int cost_l;
-    int length_aux;
-    int cost_w;
-    int nextHop;
-    float stab_time;
-    struct Node *hop;
-    struct ForwardTable* nextDest;
-    RoutingTable* nextRoute; //ter as varias opções de chegar ao mm caminho 
-};
+// // // Data structure to store a graph edge
+// // struct ForwardTable
+// // {
+// //     int dest;
+// //     int cost_l;
+// //     int length_aux;
+// //     int cost_w;
+// //     int nextHop;
+// //     float stab_time;
+// //     struct Node *hop;
+// //     struct ForwardTable* nextDest;
+// //     RoutingTable* nextRoute; //ter as varias opções de chegar ao mm caminho 
+// // };
 
-struct RoutingTable//Info dos vizinhos para o mm destino
-{
-    int dest;
-    int cost_l;
-    int cost_w;
-    int nextHop;
-    struct Node *hop;
-    struct RoutingTable* nextDest;
-};
+// // struct RoutingTable//Info dos vizinhos para o mm destino
+// // {
+// //     int dest;
+// //     int cost_l;
+// //     int cost_w;
+// //     int nextHop;
+// //     struct Node *hop;
+// //     struct RoutingTable* nextDest;
+// // };
 
 
 
@@ -517,7 +517,7 @@ void printPath(Node *node, int dest_id){
     ForwardTable *auxT;
 
     if(node == NULL){
-        return NULL;
+        return;
     }else if(node->id == dest_id){
         printf("%d\n", node->id);
         printf("\n\n");

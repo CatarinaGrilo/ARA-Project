@@ -11,26 +11,6 @@
 int flag=0; //this serves the porpuse od truncate the Dijkstra length
 
 //Queue to do dijkstra backwards to find width
-struct queueWidth{
-    int width;
-    int dest;
-    struct _Node *destPointer;
-    struct _queueWidth *next;
-};
-
-struct toAnalise{
-    int widthAllowed;
-    struct _Node *node;
-    struct _toAnalise *next;
-};
-
-//Queue to do dijkstra forward to find length, after finding the width
-struct queueLength{
-    int length;
-    int dest;
-    struct _Node *destPointer;
-    struct _queueLength *next;
-};
 
 queueWidth *createQueueWidth(queueWidth *head, Edge *neighbour, int dest ,int width){
 
