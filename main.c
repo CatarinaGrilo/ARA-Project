@@ -175,7 +175,7 @@ int main(int argc, char *argv[]){
             algorithmInteractive(auxH, 'l');
             auxT = searchGraph(graph, tail);
             auxFT = searchDestiny(auxT->nextDest, head);
-            printf("From node %d to node %d: width=%d and length=%d\nPath: %d -> ", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
+            printf("From node %d to node %d: width=%d and length=%d\nPath:%d->", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
             printPath(auxT, head);
         }
         //Shortest Widest
@@ -184,7 +184,7 @@ int main(int argc, char *argv[]){
             algorithmInteractive(auxH, 'w');
             auxT = searchGraph(graph, tail);
             auxFT = searchDestiny(auxT->nextDest, head);
-            printf("From node %d to node %d: width=%d and length=%d\nPath: %d -> ", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
+            printf("From node %d to node %d: width=%d and length=%d\nPath:%d->", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
             printPath(auxT, head);
         }  
         // Shortest Widest Corrected

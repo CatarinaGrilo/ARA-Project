@@ -471,7 +471,7 @@ void printPath(Node *node, int dest_id){
         auxT = node->nextDest;
         if(auxT->dest == dest_id){
             if(auxT->hop->id != dest_id)
-                printf("%d -> ", auxT->nextHop);
+                printf("%d->", auxT->nextHop);
             printPath(auxT->hop, dest_id);
             return;
         }
@@ -479,7 +479,7 @@ void printPath(Node *node, int dest_id){
             auxT = auxT->nextDest;
             if(auxT->dest == dest_id){
                 if(auxT->hop->id != dest_id)
-                    printf("%d -> ", auxT->nextHop);
+                    printf("%d->", auxT->nextHop);
                 printPath(auxT->hop, dest_id);
                 return;
             }
