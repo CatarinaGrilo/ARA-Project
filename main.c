@@ -71,7 +71,8 @@ int main(int argc, char *argv[]){
         printf("\n Algorithm mode (shortest-widest):  ./graphs example.txt -aw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -ail [Source] [Destiny] ");
         printf("\n Interactive Simulation mode (shortest-widest): ./graphs example.txt -aiw [Source] [Destiny] ");
-        printf("\n Optimal Algorithm mode for shortest-widest:  ./graphs example.txt -ao\n\n");
+        printf("\n Corrected Algorithm mode for shortest-widest:  ./graphs example.txt -ao\n\n");
+        printf("\n Interactive Corrected Algorithm (shortest-widest): ./graphs example.txt -aio [Source] [Destiny] ");
         exit(0);
     }
     
@@ -185,7 +186,15 @@ int main(int argc, char *argv[]){
             auxFT = searchDestiny(auxT->nextDest, head);
             printf("From node %d to node %d: width=%d and length=%d\nPath: %d -> ", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
             printPath(auxT, head);
-        }        
+        }  
+        else if (argv[2][3] == 'o'){
+            printf("\nShortest-Widest Corrected:\n");
+            flag_sim = 'w';
+            shortWidthInteractive(auxH);
+            auxT = searchGraph(graph, tail);
+            auxFT = searchDestiny(auxT->nextDest, head);
+            printf("From node %d to node %d: width=%d and length=%d\n", tail, head, auxFT->cost_w, auxFT->cost_l);
+        }      
         else{
             printf("\nInvalid arguments...\n Try using -ail or -aiw\n");
         }
@@ -202,7 +211,8 @@ int main(int argc, char *argv[]){
         printf("\n Algorithm mode (shortest-widest):  ./graphs example.txt -aw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -ail [Source] [Destiny] ");
         printf("\n Interactive Simulation mode (shortest-widest): ./graphs example.txt -aiw [Source] [Destiny] ");
-        printf("\n Optimal Algorithm mode for shortest-widest:  ./graphs example.txt -ao\n\n");
+        printf("\n Corrected Algorithm mode for shortest-widest:  ./graphs example.txt -ao\n\n");
+        printf("\n Interactive Corrected Algorithm (shortest-widest): ./graphs example.txt -aio [Source] [Destiny] ");
         exit(0);
     }
         

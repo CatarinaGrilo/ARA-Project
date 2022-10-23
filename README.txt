@@ -17,4 +17,6 @@ Algorithm mode (shortest-widest):  ./graphs example.txt -aw
 Interactive Simulation mode (widest-shortest): ./graphs example.txt -ail [Source] [Destiny]
 Interactive Simulation mode (shortest-widest): ./graphs example.txt -aiw [Source] [Destiny]
 
-Optimal Algorithm mode for shortest-widest:  ./graphs example.txt -ao
+Corrected Algorithm mode for shortest-widest:  ./graphs example.txt -ao
+
+nteractive Corrected Algorithm (shortest-widest): ./graphs example.txt -aio [Source] [Destiny]

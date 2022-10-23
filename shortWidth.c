@@ -185,6 +185,25 @@ void shortWidth(Node *nodeHead){
     return;
 }
 
+void shortWidthInteractive(Node *destNode){
+    queueWidth *queueHeadW = NULL;
+    queueLength *queueHeadL = NULL;
+    toAnalise *headAnalise=NULL;
+    
+    if(destNode == NULL){
+        return;
+    }else{
+        headAnalise = dijkstraBackWidth(queueHeadW, destNode, headAnalise);
+        while(headAnalise!=NULL){
+            //printf("ANALISE: WIDTH ALLOWED=%d", headAnalise->widthAllowed);
+            flag = 0;
+            dijkstraBackLength(queueHeadL, destNode, headAnalise);
+            headAnalise = popAnalise(headAnalise);
+        }
+    }
+    return;
+} 
+
 /* Backwards Dijkstra's algorithm just to find the widths */
 toAnalise *dijkstraBackWidth(queueWidth *head, Node *nodeDest, toAnalise *headAnalise){
 

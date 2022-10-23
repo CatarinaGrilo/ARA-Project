@@ -50,6 +50,8 @@ queueLength *insertQueueLength_ordered(queueLength *head, queueLength *newElem);
 
 void shortWidth(Node *nodeHead);
 
+void shortWidthInteractive(Node *destNode);
+
 toAnalise *dijkstraBackWidth(queueWidth *head, Node *nodeDest, toAnalise *headAnalise);
 
 void dijkstraBackLength(queueLength *head, Node *nodeDest, toAnalise *headAnalise);
