@@ -19,4 +19,4 @@ Interactive Simulation mode (shortest-widest): ./graphs example.txt -aiw [Source
 
 Corrected Algorithm mode for shortest-widest:  ./graphs example.txt -ao
 
-nteractive Corrected Algorithm (shortest-widest): ./graphs example.txt -aio [Source] [Destiny]
+Interactive Corrected Algorithm (shortest-widest): ./graphs example.txt -aio [Source] [Destiny]
