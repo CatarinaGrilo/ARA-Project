@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
     if( argc < 3){
         printf("\n\nError: Arguments are not valid\n");
         printf("To run the program, use the following arguments:\n");
-        printf("\n ./[Executable] [File.txt] -[simulation/algorithm][mode]\n");
+        printf("\n ./graphs [File.txt] -[simulation/algorithm][mode]\n");
         printf("\n Simulation mode (widest-shortest): ./graphs example.txt -sl");
         printf("\n Simulation mode (shortest-widest): ./graphs example.txt -sw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -sil [Source] [Destiny] ");
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]){
     else{
         printf("\n\nError: Arguments are not valid\n");
         printf("To run the program, use the following arguments:\n");
-        printf("\n ./[Executable] [File.txt] -[simulation/algorithm][mode]\n");
+        printf("\n ./graphs [File.txt] -[simulation/algorithm][mode]\n");
         printf("\n Simulation mode (widest-shortest): ./graphs example.txt -sl");
         printf("\n Simulation mode (shortest-widest): ./graphs example.txt -sw");
         printf("\n Interactive Simulation mode (widest-shortest): ./graphs example.txt -sil [Source] [Destiny] ");
