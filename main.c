@@ -187,6 +187,7 @@ int main(int argc, char *argv[]){
             printf("From node %d to node %d: width=%d and length=%d\nPath: %d -> ", tail, head, auxFT->cost_w, auxFT->cost_l, tail);
             printPath(auxT, head);
         }  
+        // Shortest Widest Corrected
         else if (argv[2][3] == 'o'){
             printf("\nShortest-Widest Corrected:\n");
             flag_sim = 'w';
